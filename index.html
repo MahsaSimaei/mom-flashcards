@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Mom's Beautiful Flashcards</title>
+  <title>Mom's Flashcards</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <!-- Google Fonts for clean, large text -->
   <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
@@ -16,22 +16,28 @@
       --strong-pink: #e573a8;
       --easy-green: #56c596;
       --hard-red: #f67280;
-      --shadow: 0 4px 24px 0 rgba(240, 98, 146, 0.10);
+      --shadow: 0 8px 32px 0 rgba(240, 98, 146, 0.14);
+      --panel-shadow: 0 8px 38px 0 rgba(179, 224, 255, 0.17);
       --border-radius: 22px;
       --big-text: 1.7rem;
       --med-text: 1.25rem;
       --side-padding: 36px;
       --max-width: 1100px;
+      --gradient-main: linear-gradient(130deg, #fce4ec 55%, #e3f2fd 100%);
+      --gradient-panel: linear-gradient(120deg, #b3e0ff 80%, #f8bbd0 100%);
+      --gradient-card: linear-gradient(120deg, #f8bbd0 90%, #fce4ec 100%);
+      --gradient-card-flip: linear-gradient(120deg, #e3f2fd 90%, #b3e0ff 100%);
+      --progress-bg: #fde0ef;
+      --progress-bar: #e573a8;
     }
     html, body {
-      height: 100%;
-      margin: 0;
-      padding: 0;
-      background: linear-gradient(130deg, var(--white) 65%, var(--baby-blue) 100%);
+      min-height: 100vh;
+      background: var(--gradient-main);
       font-family: 'Quicksand', Arial, sans-serif;
       color: #333;
       font-size: var(--med-text);
-      min-height: 100vh;
+      margin: 0;
+      padding: 0;
     }
     body {
       display: flex;
@@ -49,6 +55,7 @@
       text-shadow: 1px 2px 8px #fff9;
       align-self: flex-start;
     }
+    /* TWO COLUMN LAYOUT */
     .container {
       display: flex;
       flex-direction: row;
@@ -69,6 +76,7 @@
       align-items: flex-start;
       justify-content: flex-start;
       gap: 0.5em;
+      filter: drop-shadow(var(--shadow));
     }
     .side-panel {
       flex: 3;
@@ -79,9 +87,11 @@
       display: flex;
       flex-direction: column;
       gap: 1.5em;
+      filter: drop-shadow(var(--panel-shadow));
     }
+    /* FLASHCARD STYLES */
     #flashcard {
-      background: linear-gradient(120deg, var(--pink) 90%, var(--accent) 100%);
+      background: var(--gradient-card);
       border-radius: var(--border-radius);
       box-shadow: 0 7px 32px 0 rgba(240, 98, 146, 0.18);
       width: 100%;
@@ -97,20 +107,22 @@
       cursor: pointer;
       user-select: none;
       text-align: center;
-      transition: background 0.15s, color 0.15s, box-shadow 0.2s;
+      transition: background 0.22s, color 0.18s, box-shadow 0.2s, opacity 0.27s;
       color: #3d405b;
       border: 2px solid #fff0;
       outline: none;
-      animation: fadein 0.55s;
-    }
-    @keyframes fadein {
-      0% { opacity: 0; transform: translateY(25px) scale(0.97);}
-      100% { opacity: 1; transform: translateY(0) scale(1);}
+      opacity: 1;
+      animation: cardFadeIn 0.7s;
+      will-change: opacity;
     }
     #flashcard.flipped {
-      background: linear-gradient(120deg, var(--baby-blue) 90%, var(--pastel-blue) 100%);
+      background: var(--gradient-card-flip);
       color: #374151;
       border: 2px solid var(--strong-pink);
+    }
+    @keyframes cardFadeIn {
+      from { opacity: 0; }
+      to   { opacity: 1; }
     }
     #counter {
       font-size: 1.1em;
@@ -137,13 +149,12 @@
       font-weight: 600;
       margin: 0 1px;
       box-shadow: 0 2px 8px #f8bbd033;
-      transition: background 0.18s, color 0.13s, transform 0.12s;
+      transition: background 0.18s, color 0.13s;
       outline: none;
     }
     button:focus, button:hover {
       background: var(--strong-pink);
       color: #fff;
-      transform: translateY(-2px) scale(1.04);
     }
     .easy-btn {
       background: var(--easy-green);
@@ -212,10 +223,11 @@
     #import-btn:hover, #import-btn:focus {
       background: #399b6c;
     }
+    /* SIDE PANEL STATS */
     #stats {
-      background: var(--pastel-blue);
+      background: var(--gradient-panel);
       border-radius: var(--border-radius);
-      box-shadow: var(--shadow);
+      box-shadow: var(--panel-shadow);
       padding: 26px 22px 22px 22px;
       display: flex;
       flex-direction: column;
@@ -226,6 +238,7 @@
       width: 100%;
       min-width: 0;
       margin-bottom: 0.8em;
+      position: relative;
     }
     #stats span {
       display: flex;
@@ -245,6 +258,27 @@
       font-weight: 500;
       color: #486;
     }
+    /* ANIMATED PROGRESS BAR */
+    .progress-bar-wrap {
+      width: 100%;
+      max-width: 230px;
+      height: 18px;
+      background: var(--progress-bg);
+      border-radius: 11px;
+      margin: 10px 0 4px 0;
+      box-shadow: 0 1px 5px #eee4;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+    }
+    .progress-bar-inner {
+      height: 100%;
+      background: linear-gradient(90deg, var(--progress-bar), #f8bbd0 80%);
+      border-radius: 11px;
+      width: 0%;
+      transition: width 0.7s cubic-bezier(.61,1.13,.49,.98);
+    }
+    /* RESPONSIVE */
     @media (max-width: 950px) {
       .container {
         flex-direction: column;
@@ -285,10 +319,12 @@
   <h1>💖 Mom's Flashcards</h1>
   <div class="container">
     <div class="main-content">
+      <!-- Mode Switcher -->
       <div class="buttons" style="margin-bottom:0.7em;">
         <button id="mode-all" class="mode-btn active">All Cards</button>
         <button id="mode-difficult" class="mode-btn">Difficult Cards</button>
       </div>
+      <!-- Flashcard -->
       <div id="flashcard" tabindex="0">Click to show answer</div>
       <div id="counter"></div>
       <div class="buttons">
@@ -296,10 +332,12 @@
         <button id="flip-btn" aria-label="Flip card">Flip</button>
         <button id="next-btn" aria-label="Next card">Next &gt;</button>
       </div>
+      <!-- Mark difficulty -->
       <div class="buttons">
         <button id="easy-btn" class="easy-btn" aria-label="Mark card as Easy">Easy 👍</button>
         <button id="hard-btn" class="hard-btn" aria-label="Mark card as Difficult">Difficult 😅</button>
       </div>
+      <!-- Import/Export Area -->
       <details id="import-area">
         <summary>Edit or Import Cards</summary>
         <p style="font-size:1.05em;margin:8px 0 2px 0;">Paste your cards below in <strong>Front side,Back side</strong> format (one per line):</p>
@@ -309,19 +347,29 @@
       </details>
     </div>
     <div class="side-panel">
+      <!-- Statistics Panel -->
       <div id="stats">
         <span>
           <strong id="stat-reviewed">0</strong>
           <span class="stat-label">Reviewed</span>
         </span>
+        <div class="progress-bar-wrap" title="Card Progress">
+          <div class="progress-bar-inner" id="progress-reviewed"></div>
+        </div>
         <span>
           <strong id="stat-correct">0%</strong>
           <span class="stat-label">Accuracy</span>
         </span>
+        <div class="progress-bar-wrap" title="Accuracy">
+          <div class="progress-bar-inner" id="progress-accuracy"></div>
+        </div>
         <span>
           <strong id="stat-difficult">0</strong>
           <span class="stat-label">Difficult</span>
         </span>
+        <div class="progress-bar-wrap" title="Difficult Cards">
+          <div class="progress-bar-inner" id="progress-difficult"></div>
+        </div>
         <span>
           <strong id="stat-mode">All</strong>
           <span class="stat-label">Mode</span>
@@ -417,19 +465,23 @@ jogging,correr
 it's coming along,Está saliendo adelante
     `.trim();
 
+    // --- CARD PARSING ---
     function parseCards(text) {
       return text.split('\n').map(line => {
+        // Allow commas in back, so only first comma splits
         let [front, ...backArr] = line.split(',');
         let back = backArr.join(',').trim();
         return { front: front.trim(), back: back, id: Math.random().toString(36).slice(2,12) };
       }).filter(card => card.front && card.back);
     }
 
+    // --- STORAGE: Load & Save ---
     function loadCards() {
       let data = localStorage.getItem(STORAGE_KEY_CARDS);
       if (!data) return parseCards(defaultCardsText);
       try {
         const arr = JSON.parse(data);
+        // Add id if missing (for older data)
         return arr.map(card => ({
           front: card.front,
           back: card.back,
@@ -447,9 +499,11 @@ it's coming along,Está saliendo adelante
       if (data) {
         try { stats = JSON.parse(data); } catch { stats = {}; }
       }
+      // Add missing cards
       for (let c of cards) {
         if (!stats[c.id]) stats[c.id] = { reviewed: 0, correct: 0, wrong: 0, difficult: false };
       }
+      // Remove stats for deleted cards
       Object.keys(stats).forEach(cid=>{
         if (!cards.find(c=>c.id===cid)) delete stats[cid];
       });
@@ -459,14 +513,17 @@ it's coming along,Está saliendo adelante
       localStorage.setItem(STORAGE_KEY_STATS, JSON.stringify(stats));
     }
 
+    // --- INITIALIZE ---
     let cards = loadCards();
     let stats = loadStats(cards);
 
-    let mode = 'all';
+    // --- APP STATE ---
+    let mode = 'all'; // 'all' or 'difficult'
     let current = 0;
     let flipped = false;
     let difficultList = () => cards.filter(card => stats[card.id]?.difficult);
 
+    // --- ELEMENTS ---
     const flashcard = document.getElementById('flashcard');
     const counter = document.getElementById('counter');
     const prevBtn = document.getElementById('prev-btn');
@@ -482,12 +539,16 @@ it's coming along,Está saliendo adelante
     const statMode = document.getElementById('stat-mode');
     const modeAllBtn = document.getElementById('mode-all');
     const modeDiffBtn = document.getElementById('mode-difficult');
-
+    // Progress Bars
+    const progressReviewed = document.getElementById('progress-reviewed');
+    const progressAccuracy = document.getElementById('progress-accuracy');
+    const progressDifficult = document.getElementById('progress-difficult');
+    // Helper: Get cards in current mode
     function getCardList() {
       if (mode === 'all') return cards;
       return difficultList();
     }
-
+    // --- SHOW CARD with FADE IN ---
     function showCard(idx) {
       let list = getCardList();
       if (list.length === 0) {
@@ -498,16 +559,35 @@ it's coming along,Está saliendo adelante
       current = (idx + list.length) % list.length;
       flipped = false;
       flashcard.classList.remove('flipped');
-      flashcard.textContent = list[current].front;
-      counter.textContent = `Card ${current + 1} of ${list.length}`;
+      // Fade out, then change, then fade in
+      flashcard.style.opacity = 0;
+      setTimeout(() => {
+        flashcard.textContent = list[current].front;
+        counter.textContent = `Card ${current + 1} of ${list.length}`;
+        flashcard.classList.remove('flipped');
+        flashcard.style.animation = "none"; // reset animation
+        void flashcard.offsetWidth; // force reflow
+        flashcard.style.animation = null;
+        flashcard.style.opacity = 1;
+      }, 170);
     }
+    // --- FLIP CARD ---
     function flipCard() {
       let list = getCardList();
       if (!list.length) return;
       flipped = !flipped;
       flashcard.classList.toggle('flipped', flipped);
-      flashcard.textContent = flipped ? list[current].back : list[current].front;
+      // Fade out, then flip content, then fade in
+      flashcard.style.opacity = 0;
+      setTimeout(() => {
+        flashcard.textContent = flipped ? list[current].back : list[current].front;
+        flashcard.style.animation = "none";
+        void flashcard.offsetWidth;
+        flashcard.style.animation = null;
+        flashcard.style.opacity = 1;
+      }, 150);
     }
+    // --- MARK EASY/HARD ---
     function markEasy() {
       let list = getCardList();
       if (!list.length) return;
@@ -530,6 +610,7 @@ it's coming along,Está saliendo adelante
       updateStatsPanel();
       showCard(current + 1);
     }
+    // --- STATS PANEL ---
     function updateStatsPanel() {
       let total = cards.length;
       let reviewed = Object.values(stats).reduce((a, s) => a + s.reviewed, 0);
@@ -537,13 +618,25 @@ it's coming along,Está saliendo adelante
       let wrong = Object.values(stats).reduce((a, s) => a + s.wrong, 0);
       let difficult = cards.filter(c => stats[c.id]?.difficult).length;
       let percent = reviewed === 0 ? 0 : Math.round(100 * correct / reviewed);
+
       statReviewed.textContent = reviewed;
       statCorrect.textContent = percent + '%';
       statDifficult.textContent = difficult;
       statMode.textContent = mode === 'all' ? 'All' : 'Difficult';
+      // Mode button highlight
       modeAllBtn.classList.toggle('active', mode === 'all');
       modeDiffBtn.classList.toggle('active', mode === 'difficult');
+      // Progress bars (animated)
+      // Card progress: reviewed / total (max 100%)
+      let reviewedPerc = total ? Math.min(100, Math.round((reviewed/total)*100)) : 0;
+      progressReviewed.style.width = reviewedPerc + "%";
+      // Accuracy: correct / reviewed
+      progressAccuracy.style.width = percent + "%";
+      // Difficult: difficult / total (max 100%)
+      let difficultPerc = total ? Math.min(100, Math.round((difficult/total)*100)) : 0;
+      progressDifficult.style.width = difficultPerc + "%";
     }
+    // --- MODE SWITCH ---
     modeAllBtn.onclick = () => {
       mode = 'all';
       updateStatsPanel();
@@ -554,6 +647,7 @@ it's coming along,Está saliendo adelante
       updateStatsPanel();
       showCard(0);
     };
+    // --- BUTTON EVENTS ---
     prevBtn.onclick = () => { showCard(current - 1); };
     nextBtn.onclick = () => { showCard(current + 1); };
     flipBtn.onclick = flipCard;
@@ -561,12 +655,13 @@ it's coming along,Está saliendo adelante
     flashcard.onkeypress = (e) => { if (e.key === ' ' || e.key === 'Enter') flipCard(); };
     easyBtn.onclick = markEasy;
     hardBtn.onclick = markHard;
+    // --- IMPORT CARDS ---
     importBtn.onclick = () => {
       const newCards = parseCards(importArea.value);
       if (newCards.length) {
         cards = newCards.map(c => ({ ...c, id: Math.random().toString(36).slice(2,12) }));
         saveCards(cards);
-        stats = loadStats(cards);
+        stats = loadStats(cards); // reset stats for new set
         saveStats(stats);
         mode = 'all';
         updateStatsPanel();
@@ -576,10 +671,12 @@ it's coming along,Está saliendo adelante
         alert("No valid cards found. Please check your format.");
       }
     };
+    // Populate import area with current cards
     function cardsToText() {
       return cards.map(card => `${card.front},${card.back}`).join('\n');
     }
     importArea.value = cardsToText();
+    // --- INITIAL RENDER ---
     updateStatsPanel();
     showCard(0);
   </script>
