@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Simple Flashcards for Mom</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: #f9f9f9;
+      color: #222;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+    }
+    h1 {
+      margin-top: 30px;
+      font-size: 2rem;
+      font-weight: 400;
+      letter-spacing: 1px;
+    }
+    #flashcard {
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 2px 18px rgba(0,0,0,0.09);
+      width: 95vw;
+      max-width: 420px;
+      min-height: 170px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      margin: 32px 0 16px 0;
+      padding: 30px 18px;
+      font-size: 1.4rem;
+      cursor: pointer;
+      user-select: none;
+      transition: box-shadow 0.2s;
+      text-align: center;
+    }
+    #flashcard.flipped {
+      background: #f1f5f9;
+      color: #0a3d62;
+    }
+    .buttons {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      margin-bottom: 18px;
+    }
+    button {
+      padding: 10px 22px;
+      font-size: 1rem;
+      border: none;
+      border-radius: 7px;
+      background: #3b82f6;
+      color: #fff;
+      cursor: pointer;
+      transition: background 0.18s;
+      margin: 0 2px;
+    }
+    button:hover, button:focus {
+      background: #2563eb;
+    }
+    #import-area {
+      width: 100%;
+      max-width: 430px;
+      margin: 12px 0 30px 0;
+    }
+    #import {
+      width: 100%;
+      min-height: 100px;
+      font-size: 1rem;
+      border-radius: 7px;
+      border: 1px solid #bbb;
+      padding: 8px;
+      margin-bottom: 6px;
+      resize: vertical;
+    }
+    #import-btn {
+      background: #10b981;
+      margin-left: 0;
+    }
+    #import-btn:hover {
+      background: #059669;
+    }
+    #counter {
+      font-size: 1rem;
+      margin-bottom: 10px;
+      color: #666;
+    }
+    @media (max-width: 500px) {
+      #flashcard {
+        font-size: 1.1rem;
+        padding: 20px 4vw;
+      }
+      .buttons button {
+        font-size: 0.98rem;
+        padding: 8px 10px;
+      }
+      #import-area {
+        max-width: 98vw;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>Flashcards for Mom</h1>
+
+  <div id="flashcard" tabindex="0">Click to show answer</div>
+  <div id="counter"></div>
+  <div class="buttons">
+    <button id="prev-btn" aria-label="Previous card">&lt; Prev</button>
+    <button id="flip-btn" aria-label="Flip card">Flip</button>
+    <button id="next-btn" aria-label="Next card">Next &gt;</button>
+  </div>
+
+  <details id="import-area">
+    <summary style="cursor:pointer;font-size:1.04em;">Edit or Import Cards</summary>
+    <p style="font-size:0.99em;margin:8px 0 2px 0;">Paste your cards below in <strong>Front side,Back side</strong> format (one per line):</p>
+    <textarea id="import" spellcheck="false" rows="8"></textarea>
+    <br>
+    <button id="import-btn">Import Cards</button>
+  </details>
+
+  <script>
+    // Your flashcards: English,Spanish
+    const defaultCardsText = `
+the brake didn't work,ترمز کار نمی‌کرد	El freno no funcionó
+I'm running a fever,Tengo fiebre
+It just came out of the oven,Acaba de salir del horno
+This shirt looks good on me?,¿Me queda bien esta camisa?
+Hold on a minute!,¡Espera un minuto!
+Nephew,Sobrino
+Fountain,Fuente
+The brake didn't work,El freno no funcionó
+I neither smoke nor drink,No fumo ni bebo
+jacket pocket,bolsillo de la chaqueta
+make friend,Hacer amiga
+the closet ATM,el cajero automático del armario
+zucchini,calabacín
+I'm heading home,voy a casa
+Could you say that again please?,¿Podrías decirlo de nuevo?
+I was wondering if I could borrow your notes,¿Puedo prestar tus notas?
+Could you give me a hand?,¿Podrías echarme una mano? ¿Me puedes ayudar?
+I'm sorry to hear that,Lo siento mucho
+I'll let you know,Te lo avisaré
+I will call you back,Te llamaré de nuevo
+I can't hear you,No te puedo escuchar
+I get off work at 6,Mi trabajo termina a las 6
+I'm coming to pick you up,Estoy en camino para recogerte
+Nonsense,Sin sentido
+as we age,a medida que envejecemos
+Sesame,Sésamo
+companion,compañera
+a small handful,un pequeño puñado
+rely,confiar
+miracle,milagro
+had eased,se había aliviado
+soak stir and sip,remojar, remover y beber
+pumpkin seeds,semillas de calabaza
+resilience,resiliencia
+Stillness,Quietud
+embody,encarnar
+Hemp seeds,semillas de cáñamo
+sauce,salsa
+sesame paste,خمیر کنجد
+grace,gracia
+humble way,manera humilde
+manera humilde,perseguir a la juventud
+dye,teñir
+curly hair,cabello rizado, موی فرفری
+follow your doctor's advice,Siga los consejos de su médico
+long time no see,mucho tiempo sin verlo
+How's it going?,¿Cómo va todo?
+How have you been?,¿Cómo has estado?
+I think so too.,Yo también lo creo.
+I'm not sure about that.,No estoy seguro de eso.
+that sounds great,Suena genial.
+I'm looking forward to it.,Estoy deseando que llegue.
+no worries,No te preocupes
+would you like me to call him,¿Quieres que lo llame?
+Do you mind if I open the door,¿Te importa si abro la puerta?
+I'd be happy to help you.,Estaría encantado de ayudarte.
+I'm running late.,Voy con retraso.
+I'll be there in 10 minutes.,Estaré allí en 10 minutos.
+what are you up to today?,¿Qué estás haciendo hoy?
+not much just relaxing at home.,No mucho, solo descansando en casa.
+Let's catch up soon.,Pongámonos al día pronto.
+I'll get back to you,Me pondré en contacto contigo enseguida.
+what do you mean?,¿Qué quieres decir?
+let me think about it,Déjame pensarlo
+that makes sense.,Eso tiene sentido.
+I don't no idea,No tengo ni idea
+that's a good point.,Ese es un buen punto.
+it was nice talking to you.,Fue agradable hablar contigo.
+take care,Cuídate
+see you around,Nos vemos
+keep in touch,mantenerse en contacto
+fairly well,bastante bien, نسبamente bien
+at length my wish was realized.,Al final, mi deseo se hizo realidad.
+that makes no sense at all.,Eso no tiene ningún sentido.
+I can't get the lid off.,No puedo quitar la tapa.
+half a loaf is better than none.,Medio pan es mejor que nada.
+you bet!,Apuesto a que sí!
+jogging,correr
+it's coming along,Está saliendo adelante
+    `.trim();
+
+    // Parse cards from text (csv-like: Front,Back)
+    function parseCards(text) {
+      return text.split('\n').map(line => {
+        // Allow commas in back, so only first comma splits
+        let [front, ...backArr] = line.split(',');
+        let back = backArr.join(',').trim();
+        return { front: front.trim(), back: back };
+      }).filter(card => card.front && card.back);
+    }
+
+    let cards = parseCards(defaultCardsText);
+    let current = 0;
+    let flipped = false;
+
+    const flashcard = document.getElementById('flashcard');
+    const counter = document.getElementById('counter');
+    const prevBtn = document.getElementById('prev-btn');
+    const nextBtn = document.getElementById('next-btn');
+    const flipBtn = document.getElementById('flip-btn');
+    const importArea = document.getElementById('import');
+    const importBtn = document.getElementById('import-btn');
+
+    function showCard(idx) {
+      if (cards.length === 0) {
+        flashcard.textContent = "No cards loaded.";
+        counter.textContent = '';
+        return;
+      }
+      current = (idx + cards.length) % cards.length;
+      flipped = false;
+      flashcard.classList.remove('flipped');
+      flashcard.textContent = cards[current].front;
+      counter.textContent = `Card ${current + 1} of ${cards.length}`;
+    }
+
+    function flipCard() {
+      if (!cards.length) return;
+      flipped = !flipped;
+      flashcard.classList.toggle('flipped', flipped);
+      flashcard.textContent = flipped ? cards[current].back : cards[current].front;
+    }
+
+    prevBtn.onclick = () => { showCard(current - 1); };
+    nextBtn.onclick = () => { showCard(current + 1); };
+    flipBtn.onclick = flipCard;
+    flashcard.onclick = flipCard;
+    flashcard.onkeypress = (e) => { if (e.key === ' ' || e.key === 'Enter') flipCard(); };
+
+    importBtn.onclick = () => {
+      const newCards = parseCards(importArea.value);
+      if (newCards.length) {
+        cards = newCards;
+        showCard(0);
+        alert(`Imported ${cards.length} cards!`);
+      } else {
+        alert("No valid cards found. Please check your format.");
+      }
+    };
+
+    // Populate import area with current cards
+    function cardsToText() {
+      return cards.map(card => `${card.front},${card.back}`).join('\n');
+    }
+    importArea.value = cardsToText();
+
+    // Initial render
+    showCard(0);
+  </script>
+</body>
+</html>
