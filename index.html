@@ -49,8 +49,6 @@
       text-shadow: 1px 2px 8px #fff9;
       align-self: flex-start;
     }
-
-    /* TWO COLUMN LAYOUT */
     .container {
       display: flex;
       flex-direction: row;
@@ -82,7 +80,6 @@
       flex-direction: column;
       gap: 1.5em;
     }
-    /* FLASHCARD STYLES */
     #flashcard {
       background: linear-gradient(120deg, var(--pink) 90%, var(--accent) 100%);
       border-radius: var(--border-radius);
@@ -104,6 +101,11 @@
       color: #3d405b;
       border: 2px solid #fff0;
       outline: none;
+      animation: fadein 0.55s;
+    }
+    @keyframes fadein {
+      0% { opacity: 0; transform: translateY(25px) scale(0.97);}
+      100% { opacity: 1; transform: translateY(0) scale(1);}
     }
     #flashcard.flipped {
       background: linear-gradient(120deg, var(--baby-blue) 90%, var(--pastel-blue) 100%);
@@ -135,12 +137,13 @@
       font-weight: 600;
       margin: 0 1px;
       box-shadow: 0 2px 8px #f8bbd033;
-      transition: background 0.18s, color 0.13s;
+      transition: background 0.18s, color 0.13s, transform 0.12s;
       outline: none;
     }
     button:focus, button:hover {
       background: var(--strong-pink);
       color: #fff;
+      transform: translateY(-2px) scale(1.04);
     }
     .easy-btn {
       background: var(--easy-green);
@@ -209,7 +212,6 @@
     #import-btn:hover, #import-btn:focus {
       background: #399b6c;
     }
-    /* SIDE PANEL STATS */
     #stats {
       background: var(--pastel-blue);
       border-radius: var(--border-radius);
@@ -283,12 +285,10 @@
   <h1>💖 Mom's Flashcards</h1>
   <div class="container">
     <div class="main-content">
-      <!-- Mode Switcher -->
       <div class="buttons" style="margin-bottom:0.7em;">
         <button id="mode-all" class="mode-btn active">All Cards</button>
         <button id="mode-difficult" class="mode-btn">Difficult Cards</button>
       </div>
-      <!-- Flashcard -->
       <div id="flashcard" tabindex="0">Click to show answer</div>
       <div id="counter"></div>
       <div class="buttons">
@@ -296,12 +296,10 @@
         <button id="flip-btn" aria-label="Flip card">Flip</button>
         <button id="next-btn" aria-label="Next card">Next &gt;</button>
       </div>
-      <!-- Mark difficulty -->
       <div class="buttons">
         <button id="easy-btn" class="easy-btn" aria-label="Mark card as Easy">Easy 👍</button>
         <button id="hard-btn" class="hard-btn" aria-label="Mark card as Difficult">Difficult 😅</button>
       </div>
-      <!-- Import/Export Area -->
       <details id="import-area">
         <summary>Edit or Import Cards</summary>
         <p style="font-size:1.05em;margin:8px 0 2px 0;">Paste your cards below in <strong>Front side,Back side</strong> format (one per line):</p>
@@ -311,7 +309,6 @@
       </details>
     </div>
     <div class="side-panel">
-      <!-- Statistics Panel -->
       <div id="stats">
         <span>
           <strong id="stat-reviewed">0</strong>
@@ -420,23 +417,19 @@ jogging,correr
 it's coming along,Está saliendo adelante
     `.trim();
 
-    // --- CARD PARSING ---
     function parseCards(text) {
       return text.split('\n').map(line => {
-        // Allow commas in back, so only first comma splits
         let [front, ...backArr] = line.split(',');
         let back = backArr.join(',').trim();
         return { front: front.trim(), back: back, id: Math.random().toString(36).slice(2,12) };
       }).filter(card => card.front && card.back);
     }
 
-    // --- STORAGE: Load & Save ---
     function loadCards() {
       let data = localStorage.getItem(STORAGE_KEY_CARDS);
       if (!data) return parseCards(defaultCardsText);
       try {
         const arr = JSON.parse(data);
-        // Add id if missing (for older data)
         return arr.map(card => ({
           front: card.front,
           back: card.back,
@@ -454,11 +447,9 @@ it's coming along,Está saliendo adelante
       if (data) {
         try { stats = JSON.parse(data); } catch { stats = {}; }
       }
-      // Add missing cards
       for (let c of cards) {
         if (!stats[c.id]) stats[c.id] = { reviewed: 0, correct: 0, wrong: 0, difficult: false };
       }
-      // Remove stats for deleted cards
       Object.keys(stats).forEach(cid=>{
         if (!cards.find(c=>c.id===cid)) delete stats[cid];
       });
@@ -468,17 +459,14 @@ it's coming along,Está saliendo adelante
       localStorage.setItem(STORAGE_KEY_STATS, JSON.stringify(stats));
     }
 
-    // --- INITIALIZE ---
     let cards = loadCards();
     let stats = loadStats(cards);
 
-    // --- APP STATE ---
-    let mode = 'all'; // 'all' or 'difficult'
+    let mode = 'all';
     let current = 0;
     let flipped = false;
     let difficultList = () => cards.filter(card => stats[card.id]?.difficult);
 
-    // --- ELEMENTS ---
     const flashcard = document.getElementById('flashcard');
     const counter = document.getElementById('counter');
     const prevBtn = document.getElementById('prev-btn');
@@ -494,12 +482,12 @@ it's coming along,Está saliendo adelante
     const statMode = document.getElementById('stat-mode');
     const modeAllBtn = document.getElementById('mode-all');
     const modeDiffBtn = document.getElementById('mode-difficult');
-    // Helper: Get cards in current mode
+
     function getCardList() {
       if (mode === 'all') return cards;
       return difficultList();
     }
-    // --- SHOW CARD ---
+
     function showCard(idx) {
       let list = getCardList();
       if (list.length === 0) {
@@ -513,7 +501,6 @@ it's coming along,Está saliendo adelante
       flashcard.textContent = list[current].front;
       counter.textContent = `Card ${current + 1} of ${list.length}`;
     }
-    // --- FLIP CARD ---
     function flipCard() {
       let list = getCardList();
       if (!list.length) return;
@@ -521,7 +508,6 @@ it's coming along,Está saliendo adelante
       flashcard.classList.toggle('flipped', flipped);
       flashcard.textContent = flipped ? list[current].back : list[current].front;
     }
-    // --- MARK EASY/HARD ---
     function markEasy() {
       let list = getCardList();
       if (!list.length) return;
@@ -544,9 +530,7 @@ it's coming along,Está saliendo adelante
       updateStatsPanel();
       showCard(current + 1);
     }
-    // --- STATS PANEL ---
     function updateStatsPanel() {
-      // Calculate stats
       let total = cards.length;
       let reviewed = Object.values(stats).reduce((a, s) => a + s.reviewed, 0);
       let correct = Object.values(stats).reduce((a, s) => a + s.correct, 0);
@@ -557,11 +541,9 @@ it's coming along,Está saliendo adelante
       statCorrect.textContent = percent + '%';
       statDifficult.textContent = difficult;
       statMode.textContent = mode === 'all' ? 'All' : 'Difficult';
-      // Mode button highlight
       modeAllBtn.classList.toggle('active', mode === 'all');
       modeDiffBtn.classList.toggle('active', mode === 'difficult');
     }
-    // --- MODE SWITCH ---
     modeAllBtn.onclick = () => {
       mode = 'all';
       updateStatsPanel();
@@ -572,8 +554,6 @@ it's coming along,Está saliendo adelante
       updateStatsPanel();
       showCard(0);
     };
-
-    // --- BUTTON EVENTS ---
     prevBtn.onclick = () => { showCard(current - 1); };
     nextBtn.onclick = () => { showCard(current + 1); };
     flipBtn.onclick = flipCard;
@@ -581,14 +561,12 @@ it's coming along,Está saliendo adelante
     flashcard.onkeypress = (e) => { if (e.key === ' ' || e.key === 'Enter') flipCard(); };
     easyBtn.onclick = markEasy;
     hardBtn.onclick = markHard;
-
-    // --- IMPORT CARDS ---
     importBtn.onclick = () => {
       const newCards = parseCards(importArea.value);
       if (newCards.length) {
         cards = newCards.map(c => ({ ...c, id: Math.random().toString(36).slice(2,12) }));
         saveCards(cards);
-        stats = loadStats(cards); // reset stats for new set
+        stats = loadStats(cards);
         saveStats(stats);
         mode = 'all';
         updateStatsPanel();
@@ -598,13 +576,10 @@ it's coming along,Está saliendo adelante
         alert("No valid cards found. Please check your format.");
       }
     };
-    // Populate import area with current cards
     function cardsToText() {
       return cards.map(card => `${card.front},${card.back}`).join('\n');
     }
     importArea.value = cardsToText();
-
-    // --- INITIAL RENDER ---
     updateStatsPanel();
     showCard(0);
   </script>
