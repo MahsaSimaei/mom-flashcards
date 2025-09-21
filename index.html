@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <title>Mom's Flashcards</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <!-- Google Fonts for clean, large text -->
-  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
+  <!-- Google Fonts for clean, large text and fancy header -->
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;700&family=Pacifico&display=swap" rel="stylesheet">
   <style>
     :root {
       --pink: #f8bbd0;
@@ -45,15 +45,62 @@
       align-items: center;
       min-height: 100vh;
     }
-    h1 {
-      font-size: 2.3rem;
+    /* HEADER AREA */
+    .hero-header {
+      width: 100%;
+      max-width: 700px;
+      margin: 48px auto 28px auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background: linear-gradient(110deg, #fff 85%, #f8bbd0 100%);
+      border-radius: 26px;
+      box-shadow: 0 8px 44px 0 rgba(248, 187, 208, 0.16);
+      padding: 38px 5vw 24px 5vw;
+      position: relative;
+      z-index: 2;
+      animation: fadeInUp 1s cubic-bezier(.23,1.07,.56,1.14);
+    }
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(64px);}
+      to   { opacity: 1; transform: none;}
+    }
+    .hero-header h1 {
+      font-size: 2.28rem;
       color: var(--strong-pink);
-      margin-top: 30px;
-      margin-bottom: 1.1em;
-      letter-spacing: 1px;
+      font-family: 'Pacifico', cursive, 'Quicksand', Arial, sans-serif;
+      letter-spacing: 2px;
       font-weight: 700;
-      text-shadow: 1px 2px 8px #fff9;
-      align-self: flex-start;
+      text-shadow: 0 5px 18px #fde0ef90, 0 1px 0 #fff;
+      margin: 0 0 8px 0;
+      text-align: center;
+    }
+    .subtitle {
+      font-size: 1.16rem;
+      color: #4c395c;
+      background: linear-gradient(90deg, #fce4ec 70%, #b3e0ff 100%);
+      padding: 8px 26px;
+      border-radius: 17px;
+      margin-bottom: 13px;
+      margin-top: 0;
+      box-shadow: 0 2px 8px #f8bbd025;
+      font-family: 'Quicksand', Arial, sans-serif;
+      font-weight: 700;
+      letter-spacing: 1px;
+      position: relative;
+      display: inline-block;
+      animation: fadeIn 1.7s 0.4s backwards;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0;}
+      to   { opacity: 1;}
+    }
+    .divider {
+      width: 60px;
+      border: 0;
+      border-top: 3px solid #f8bbd0;
+      margin: 18px auto 0 auto;
+      opacity: 0.7;
     }
     /* TWO COLUMN LAYOUT */
     .container {
@@ -295,8 +342,14 @@
       }
     }
     @media (max-width: 600px) {
-      h1 {
-        font-size: 1.25rem;
+      .hero-header {
+        padding: 18px 2vw 13px 2vw;
+      }
+      .hero-header h1 {
+        font-size: 1.3rem;
+      }
+      .subtitle {
+        font-size: 0.98rem;
       }
       #flashcard {
         font-size: 1.05rem;
@@ -316,7 +369,11 @@
   </style>
 </head>
 <body>
-  <h1>💖 Mom's Flashcards</h1>
+  <div class="hero-header">
+    <h1>💖 Mom's Flashcards</h1>
+    <div class="subtitle">Made by Mahsa, your daughter</div>
+    <hr class="divider">
+  </div>
   <div class="container">
     <div class="main-content">
       <!-- Mode Switcher -->
