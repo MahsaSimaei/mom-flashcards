@@ -16,16 +16,18 @@
       --strong-pink: #e573a8;
       --easy-green: #56c596;
       --hard-red: #f67280;
-      --shadow: 0 4px 24px 0 rgba(240, 98, 146, 0.12);
+      --shadow: 0 4px 24px 0 rgba(240, 98, 146, 0.10);
       --border-radius: 22px;
       --big-text: 1.7rem;
       --med-text: 1.25rem;
+      --side-padding: 36px;
+      --max-width: 1100px;
     }
     html, body {
       height: 100%;
       margin: 0;
       padding: 0;
-      background: linear-gradient(130deg, var(--white) 70%, var(--baby-blue) 100%);
+      background: linear-gradient(130deg, var(--white) 65%, var(--baby-blue) 100%);
       font-family: 'Quicksand', Arial, sans-serif;
       color: #333;
       font-size: var(--med-text);
@@ -35,56 +37,59 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: flex-start;
       min-height: 100vh;
     }
     h1 {
       font-size: 2.3rem;
       color: var(--strong-pink);
       margin-top: 30px;
-      margin-bottom: 0.6em;
+      margin-bottom: 1.1em;
       letter-spacing: 1px;
       font-weight: 700;
       text-shadow: 1px 2px 8px #fff9;
+      align-self: flex-start;
     }
-    /* STATISTICS PANEL */
-    #stats {
-      background: var(--pastel-blue);
-      border-radius: var(--border-radius);
-      box-shadow: var(--shadow);
-      padding: 18px 32px;
-      margin-bottom: 1.2em;
+
+    /* TWO COLUMN LAYOUT */
+    .container {
       display: flex;
-      flex-wrap: wrap;
-      gap: 2.5em;
-      align-items: center;
-      font-size: 1.1em;
-      font-weight: 500;
-      width: 98vw;
-      max-width: 480px;
-      justify-content: space-between;
-      color: #234;
+      flex-direction: row;
+      justify-content: center;
+      align-items: flex-start;
+      gap: 34px;
+      width: 100%;
+      max-width: var(--max-width);
+      padding: 0 var(--side-padding);
+      box-sizing: border-box;
     }
-    #stats span {
+    .main-content {
+      flex: 7;
+      min-width: 0;
+      max-width: 70%;
       display: flex;
       flex-direction: column;
-      align-items: center;
+      align-items: flex-start;
+      justify-content: flex-start;
+      gap: 0.5em;
     }
-    #stats strong {
-      font-size: 1.2em;
-      color: var(--strong-pink);
-      margin-bottom: 2px;
-      font-weight: 700;
-      letter-spacing: 1px;
+    .side-panel {
+      flex: 3;
+      min-width: 250px;
+      max-width: 340px;
+      width: 30%;
+      margin-top: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5em;
     }
     /* FLASHCARD STYLES */
     #flashcard {
       background: linear-gradient(120deg, var(--pink) 90%, var(--accent) 100%);
       border-radius: var(--border-radius);
       box-shadow: 0 7px 32px 0 rgba(240, 98, 146, 0.18);
-      width: 96vw;
-      max-width: 440px;
-      min-height: 180px;
+      width: 100%;
+      min-height: 170px;
+      max-width: 520px;
       display: flex;
       flex-direction: column;
       justify-content: center;
@@ -111,12 +116,11 @@
       margin-bottom: 15px;
       font-weight: 600;
     }
-    /* BUTTONS */
     .buttons {
       display: flex;
-      justify-content: center;
+      justify-content: flex-start;
       gap: 14px;
-      margin-bottom: 22px;
+      margin-bottom: 18px;
       flex-wrap: wrap;
     }
     button {
@@ -167,11 +171,10 @@
       color: var(--strong-pink);
       border: 2px solid var(--strong-pink);
     }
-    /* IMPORT AREA */
     #import-area {
       width: 100%;
-      max-width: 470px;
-      margin: 13px 0 44px 0;
+      max-width: 520px;
+      margin: 13px 0 24px 0;
       background: #fff7faff;
       border-radius: 13px;
       box-shadow: 0 1px 12px #b3e0ff22;
@@ -206,61 +209,129 @@
     #import-btn:hover, #import-btn:focus {
       background: #399b6c;
     }
-    @media (max-width: 550px) {
-      #stats { font-size: 1em; padding: 13px 7vw; }
-      #flashcard { font-size: 1.08rem; padding: 20px 4vw; }
-      .buttons button { font-size: 1em; padding: 10px 8px; }
-      #import-area { max-width: 98vw; }
+    /* SIDE PANEL STATS */
+    #stats {
+      background: var(--pastel-blue);
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow);
+      padding: 26px 22px 22px 22px;
+      display: flex;
+      flex-direction: column;
+      gap: 1.7em;
+      font-size: 1.07em;
+      font-weight: 500;
+      color: #234;
+      width: 100%;
+      min-width: 0;
+      margin-bottom: 0.8em;
+    }
+    #stats span {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      margin-bottom: 0.5em;
+    }
+    #stats strong {
+      font-size: 1.2em;
+      color: var(--strong-pink);
+      font-weight: 700;
+      letter-spacing: 1px;
+      margin-bottom: 3px;
+    }
+    .stat-label {
+      font-size: 0.97em;
+      font-weight: 500;
+      color: #486;
+    }
+    @media (max-width: 950px) {
+      .container {
+        flex-direction: column;
+        gap: 0;
+        padding: 0 4vw;
+      }
+      .main-content, .side-panel {
+        max-width: 100%;
+        width: 100%;
+      }
+      .side-panel {
+        margin-top: 40px;
+        align-items: flex-stretch;
+      }
+    }
+    @media (max-width: 600px) {
+      h1 {
+        font-size: 1.25rem;
+      }
+      #flashcard {
+        font-size: 1.05rem;
+        padding: 16px 3vw;
+      }
+      .buttons button {
+        font-size: 0.97em;
+        padding: 8px 10px;
+      }
+      #import-area {
+        max-width: 98vw;
+      }
+      #stats {
+        padding: 13px 8vw 13px 8vw;
+      }
     }
   </style>
 </head>
 <body>
   <h1>💖 Mom's Flashcards</h1>
-  <!-- Statistics Panel -->
-  <div id="stats">
-    <span>
-      <strong id="stat-reviewed">0</strong>
-      Reviewed
-    </span>
-    <span>
-      <strong id="stat-correct">0%</strong>
-      Accuracy
-    </span>
-    <span>
-      <strong id="stat-difficult">0</strong>
-      Difficult
-    </span>
-    <span>
-      <strong id="stat-mode">All</strong>
-      Mode
-    </span>
+  <div class="container">
+    <div class="main-content">
+      <!-- Mode Switcher -->
+      <div class="buttons" style="margin-bottom:0.7em;">
+        <button id="mode-all" class="mode-btn active">All Cards</button>
+        <button id="mode-difficult" class="mode-btn">Difficult Cards</button>
+      </div>
+      <!-- Flashcard -->
+      <div id="flashcard" tabindex="0">Click to show answer</div>
+      <div id="counter"></div>
+      <div class="buttons">
+        <button id="prev-btn" aria-label="Previous card">&lt; Prev</button>
+        <button id="flip-btn" aria-label="Flip card">Flip</button>
+        <button id="next-btn" aria-label="Next card">Next &gt;</button>
+      </div>
+      <!-- Mark difficulty -->
+      <div class="buttons">
+        <button id="easy-btn" class="easy-btn" aria-label="Mark card as Easy">Easy 👍</button>
+        <button id="hard-btn" class="hard-btn" aria-label="Mark card as Difficult">Difficult 😅</button>
+      </div>
+      <!-- Import/Export Area -->
+      <details id="import-area">
+        <summary>Edit or Import Cards</summary>
+        <p style="font-size:1.05em;margin:8px 0 2px 0;">Paste your cards below in <strong>Front side,Back side</strong> format (one per line):</p>
+        <textarea id="import" spellcheck="false" rows="8"></textarea>
+        <br>
+        <button id="import-btn">Import Cards</button>
+      </details>
+    </div>
+    <div class="side-panel">
+      <!-- Statistics Panel -->
+      <div id="stats">
+        <span>
+          <strong id="stat-reviewed">0</strong>
+          <span class="stat-label">Reviewed</span>
+        </span>
+        <span>
+          <strong id="stat-correct">0%</strong>
+          <span class="stat-label">Accuracy</span>
+        </span>
+        <span>
+          <strong id="stat-difficult">0</strong>
+          <span class="stat-label">Difficult</span>
+        </span>
+        <span>
+          <strong id="stat-mode">All</strong>
+          <span class="stat-label">Mode</span>
+        </span>
+      </div>
+    </div>
   </div>
-  <!-- Mode Switcher -->
-  <div class="buttons" style="margin-bottom:0.7em;">
-    <button id="mode-all" class="mode-btn active">All Cards</button>
-    <button id="mode-difficult" class="mode-btn">Difficult Cards</button>
-  </div>
-  <!-- Flashcard -->
-  <div id="flashcard" tabindex="0">Click to show answer</div>
-  <div id="counter"></div>
-  <div class="buttons">
-    <button id="prev-btn" aria-label="Previous card">&lt; Prev</button>
-    <button id="flip-btn" aria-label="Flip card">Flip</button>
-    <button id="next-btn" aria-label="Next card">Next &gt;</button>
-  </div>
-  <!-- Mark difficulty -->
-  <div class="buttons">
-    <button id="easy-btn" class="easy-btn" aria-label="Mark card as Easy">Easy 👍</button>
-    <button id="hard-btn" class="hard-btn" aria-label="Mark card as Difficult">Difficult 😅</button>
-  </div>
-  <!-- Import/Export Area -->
-  <details id="import-area">
-    <summary>Edit or Import Cards</summary>
-    <p style="font-size:1.05em;margin:8px 0 2px 0;">Paste your cards below in <strong>Front side,Back side</strong> format (one per line):</p>
-    <textarea id="import" spellcheck="false" rows="8"></textarea>
-    <br>
-    <button id="import-btn">Import Cards</button>
-  </details>
   <script>
     // --- STORAGE KEYS ---
     const STORAGE_KEY_CARDS = 'mom_flashcards_cards_v1';
