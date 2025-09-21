@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <title>Mom's Flashcards</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <!-- Google Fonts for clean, large text and fancy header -->
-  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;700&family=Pacifico&display=swap" rel="stylesheet">
+  <!-- Google Fonts: Quicksand for body, Dancing Script for title -->
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;700&family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
   <style>
     :root {
       --pink: #f8bbd0;
@@ -68,12 +68,24 @@
     .hero-header h1 {
       font-size: 2.28rem;
       color: var(--strong-pink);
-      font-family: 'Pacifico', cursive, 'Quicksand', Arial, sans-serif;
-      letter-spacing: 2px;
+      font-family: 'Dancing Script', cursive, 'Quicksand', Arial, sans-serif;
+      letter-spacing: 1.5px;
       font-weight: 700;
       text-shadow: 0 5px 18px #fde0ef90, 0 1px 0 #fff;
       margin: 0 0 8px 0;
       text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.3em;
+      line-height: 1.15;
+      /* Slight curve */
+    }
+    .hero-header .hearts {
+      font-size: 1.25em;
+      margin-right: 0.15em;
+      /* optional: add some text-shadow for visual pop */
+      text-shadow: 0 2px 8px #fde0ef88;
     }
     .subtitle {
       font-size: 1.16rem;
@@ -102,7 +114,7 @@
       margin: 18px auto 0 auto;
       opacity: 0.7;
     }
-    /* TWO COLUMN LAYOUT */
+    /* TWO COLUMN LAYOUT ... (rest unchanged) */
     .container {
       display: flex;
       flex-direction: row;
@@ -370,8 +382,11 @@
 </head>
 <body>
   <div class="hero-header">
-    <h1>💖 Mom's Flashcards</h1>
-    <div class="subtitle">Made by Mahsa, your daughter</div>
+    <h1>
+      <span class="hearts">💖💖</span>
+      Mom's Flashcards
+    </h1>
+    <div class="subtitle">Made by Mahsa</div>
     <hr class="divider">
   </div>
   <div class="container">
