@@ -2,113 +2,245 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Simple Flashcards for Mom</title>
+  <title>Mom's Beautiful Flashcards</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Google Fonts for clean, large text -->
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
   <style>
+    :root {
+      --pink: #f8bbd0;
+      --pastel-blue: #b3e0ff;
+      --white: #fff;
+      --baby-blue: #e3f2fd;
+      --accent: #fce4ec;
+      --strong-pink: #e573a8;
+      --easy-green: #56c596;
+      --hard-red: #f67280;
+      --shadow: 0 4px 24px 0 rgba(240, 98, 146, 0.12);
+      --border-radius: 22px;
+      --big-text: 1.7rem;
+      --med-text: 1.25rem;
+    }
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(130deg, var(--white) 70%, var(--baby-blue) 100%);
+      font-family: 'Quicksand', Arial, sans-serif;
+      color: #333;
+      font-size: var(--med-text);
+      min-height: 100vh;
+    }
     body {
-      font-family: 'Segoe UI', Arial, sans-serif;
-      background: #f9f9f9;
-      color: #222;
       display: flex;
       flex-direction: column;
       align-items: center;
+      justify-content: flex-start;
       min-height: 100vh;
-      margin: 0;
     }
     h1 {
+      font-size: 2.3rem;
+      color: var(--strong-pink);
       margin-top: 30px;
-      font-size: 2rem;
-      font-weight: 400;
+      margin-bottom: 0.6em;
+      letter-spacing: 1px;
+      font-weight: 700;
+      text-shadow: 1px 2px 8px #fff9;
+    }
+    /* STATISTICS PANEL */
+    #stats {
+      background: var(--pastel-blue);
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow);
+      padding: 18px 32px;
+      margin-bottom: 1.2em;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2.5em;
+      align-items: center;
+      font-size: 1.1em;
+      font-weight: 500;
+      width: 98vw;
+      max-width: 480px;
+      justify-content: space-between;
+      color: #234;
+    }
+    #stats span {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    #stats strong {
+      font-size: 1.2em;
+      color: var(--strong-pink);
+      margin-bottom: 2px;
+      font-weight: 700;
       letter-spacing: 1px;
     }
+    /* FLASHCARD STYLES */
     #flashcard {
-      background: #fff;
-      border-radius: 12px;
-      box-shadow: 0 2px 18px rgba(0,0,0,0.09);
-      width: 95vw;
-      max-width: 420px;
-      min-height: 170px;
+      background: linear-gradient(120deg, var(--pink) 90%, var(--accent) 100%);
+      border-radius: var(--border-radius);
+      box-shadow: 0 7px 32px 0 rgba(240, 98, 146, 0.18);
+      width: 96vw;
+      max-width: 440px;
+      min-height: 180px;
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      margin: 32px 0 16px 0;
-      padding: 30px 18px;
-      font-size: 1.4rem;
+      margin: 0 0 22px 0;
+      padding: 38px 18px;
+      font-size: var(--big-text);
       cursor: pointer;
       user-select: none;
-      transition: box-shadow 0.2s;
       text-align: center;
+      transition: background 0.15s, color 0.15s, box-shadow 0.2s;
+      color: #3d405b;
+      border: 2px solid #fff0;
+      outline: none;
     }
     #flashcard.flipped {
-      background: #f1f5f9;
-      color: #0a3d62;
+      background: linear-gradient(120deg, var(--baby-blue) 90%, var(--pastel-blue) 100%);
+      color: #374151;
+      border: 2px solid var(--strong-pink);
     }
+    #counter {
+      font-size: 1.1em;
+      color: #9a4c85;
+      margin-bottom: 15px;
+      font-weight: 600;
+    }
+    /* BUTTONS */
     .buttons {
       display: flex;
       justify-content: center;
-      gap: 16px;
-      margin-bottom: 18px;
+      gap: 14px;
+      margin-bottom: 22px;
+      flex-wrap: wrap;
     }
     button {
-      padding: 10px 22px;
-      font-size: 1rem;
+      padding: 14px 26px;
+      font-size: 1.1em;
       border: none;
-      border-radius: 7px;
-      background: #3b82f6;
-      color: #fff;
+      border-radius: 12px;
+      background: var(--baby-blue);
+      color: #234;
       cursor: pointer;
-      transition: background 0.18s;
-      margin: 0 2px;
+      font-family: 'Quicksand', Arial, sans-serif;
+      font-weight: 600;
+      margin: 0 1px;
+      box-shadow: 0 2px 8px #f8bbd033;
+      transition: background 0.18s, color 0.13s;
+      outline: none;
     }
-    button:hover, button:focus {
-      background: #2563eb;
+    button:focus, button:hover {
+      background: var(--strong-pink);
+      color: #fff;
     }
+    .easy-btn {
+      background: var(--easy-green);
+      color: #fff;
+    }
+    .easy-btn:hover, .easy-btn:focus {
+      background: #399b6c;
+      color: #fff;
+    }
+    .hard-btn {
+      background: var(--hard-red);
+      color: #fff;
+    }
+    .hard-btn:hover, .hard-btn:focus {
+      background: #c6425a;
+    }
+    .mode-btn {
+      background: var(--pastel-blue);
+      color: #234;
+      border: 2px solid var(--baby-blue);
+      margin-bottom: 0.4em;
+      font-size: 1.06em;
+      padding: 11px 18px;
+    }
+    .mode-btn.active,
+    .mode-btn:focus {
+      background: var(--pink);
+      color: var(--strong-pink);
+      border: 2px solid var(--strong-pink);
+    }
+    /* IMPORT AREA */
     #import-area {
       width: 100%;
-      max-width: 430px;
-      margin: 12px 0 30px 0;
+      max-width: 470px;
+      margin: 13px 0 44px 0;
+      background: #fff7faff;
+      border-radius: 13px;
+      box-shadow: 0 1px 12px #b3e0ff22;
+      padding: 0 0 14px 0;
+    }
+    #import-area summary {
+      cursor:pointer;
+      font-size: 1.15em;
+      color: var(--strong-pink);
+      font-weight: 700;
+      padding: 18px 22px 10px 22px;
     }
     #import {
-      width: 100%;
-      min-height: 100px;
-      font-size: 1rem;
-      border-radius: 7px;
-      border: 1px solid #bbb;
-      padding: 8px;
-      margin-bottom: 6px;
+      width: 93%;
+      min-height: 95px;
+      font-size: 1em;
+      border-radius: 9px;
+      border: 1.7px solid #bbc;
+      padding: 7px;
+      margin-bottom: 8px;
+      margin-left: 2.5%;
+      margin-right: 2.5%;
       resize: vertical;
+      font-family: 'Quicksand', Arial, sans-serif;
     }
     #import-btn {
-      background: #10b981;
-      margin-left: 0;
+      background: var(--easy-green);
+      color: #fff;
+      margin-left: 2.5%;
+      margin-bottom: 7px;
     }
-    #import-btn:hover {
-      background: #059669;
+    #import-btn:hover, #import-btn:focus {
+      background: #399b6c;
     }
-    #counter {
-      font-size: 1rem;
-      margin-bottom: 10px;
-      color: #666;
-    }
-    @media (max-width: 500px) {
-      #flashcard {
-        font-size: 1.1rem;
-        padding: 20px 4vw;
-      }
-      .buttons button {
-        font-size: 0.98rem;
-        padding: 8px 10px;
-      }
-      #import-area {
-        max-width: 98vw;
-      }
+    @media (max-width: 550px) {
+      #stats { font-size: 1em; padding: 13px 7vw; }
+      #flashcard { font-size: 1.08rem; padding: 20px 4vw; }
+      .buttons button { font-size: 1em; padding: 10px 8px; }
+      #import-area { max-width: 98vw; }
     }
   </style>
 </head>
 <body>
-  <h1>Flashcards for Mom</h1>
-
+  <h1>💖 Mom's Flashcards</h1>
+  <!-- Statistics Panel -->
+  <div id="stats">
+    <span>
+      <strong id="stat-reviewed">0</strong>
+      Reviewed
+    </span>
+    <span>
+      <strong id="stat-correct">0%</strong>
+      Accuracy
+    </span>
+    <span>
+      <strong id="stat-difficult">0</strong>
+      Difficult
+    </span>
+    <span>
+      <strong id="stat-mode">All</strong>
+      Mode
+    </span>
+  </div>
+  <!-- Mode Switcher -->
+  <div class="buttons" style="margin-bottom:0.7em;">
+    <button id="mode-all" class="mode-btn active">All Cards</button>
+    <button id="mode-difficult" class="mode-btn">Difficult Cards</button>
+  </div>
+  <!-- Flashcard -->
   <div id="flashcard" tabindex="0">Click to show answer</div>
   <div id="counter"></div>
   <div class="buttons">
@@ -116,19 +248,27 @@
     <button id="flip-btn" aria-label="Flip card">Flip</button>
     <button id="next-btn" aria-label="Next card">Next &gt;</button>
   </div>
-
+  <!-- Mark difficulty -->
+  <div class="buttons">
+    <button id="easy-btn" class="easy-btn" aria-label="Mark card as Easy">Easy 👍</button>
+    <button id="hard-btn" class="hard-btn" aria-label="Mark card as Difficult">Difficult 😅</button>
+  </div>
+  <!-- Import/Export Area -->
   <details id="import-area">
-    <summary style="cursor:pointer;font-size:1.04em;">Edit or Import Cards</summary>
-    <p style="font-size:0.99em;margin:8px 0 2px 0;">Paste your cards below in <strong>Front side,Back side</strong> format (one per line):</p>
+    <summary>Edit or Import Cards</summary>
+    <p style="font-size:1.05em;margin:8px 0 2px 0;">Paste your cards below in <strong>Front side,Back side</strong> format (one per line):</p>
     <textarea id="import" spellcheck="false" rows="8"></textarea>
     <br>
     <button id="import-btn">Import Cards</button>
   </details>
-
   <script>
-    // Your flashcards: English,Spanish
+    // --- STORAGE KEYS ---
+    const STORAGE_KEY_CARDS = 'mom_flashcards_cards_v1';
+    const STORAGE_KEY_STATS = 'mom_flashcards_stats_v1';
+
+    // --- DEFAULT CARDS ---
     const defaultCardsText = `
-the brake didn't work,ترمز کار نمی‌کرد	El freno no funcionó
+the brake didn't work: ترمز کار نمی‌کرد,El freno no funcionó
 I'm running a fever,Tengo fiebre
 It just came out of the oven,Acaba de salir del horno
 This shirt looks good on me?,¿Me queda bien esta camisa?
@@ -209,72 +349,192 @@ jogging,correr
 it's coming along,Está saliendo adelante
     `.trim();
 
-    // Parse cards from text (csv-like: Front,Back)
+    // --- CARD PARSING ---
     function parseCards(text) {
       return text.split('\n').map(line => {
         // Allow commas in back, so only first comma splits
         let [front, ...backArr] = line.split(',');
         let back = backArr.join(',').trim();
-        return { front: front.trim(), back: back };
+        return { front: front.trim(), back: back, id: Math.random().toString(36).slice(2,12) };
       }).filter(card => card.front && card.back);
     }
 
-    let cards = parseCards(defaultCardsText);
+    // --- STORAGE: Load & Save ---
+    function loadCards() {
+      let data = localStorage.getItem(STORAGE_KEY_CARDS);
+      if (!data) return parseCards(defaultCardsText);
+      try {
+        const arr = JSON.parse(data);
+        // Add id if missing (for older data)
+        return arr.map(card => ({
+          front: card.front,
+          back: card.back,
+          id: card.id || Math.random().toString(36).slice(2,12)
+        }));
+      } catch { return parseCards(defaultCardsText); }
+    }
+    function saveCards(cards) {
+      localStorage.setItem(STORAGE_KEY_CARDS, JSON.stringify(cards));
+    }
+
+    function loadStats(cards) {
+      let data = localStorage.getItem(STORAGE_KEY_STATS);
+      let stats = {};
+      if (data) {
+        try { stats = JSON.parse(data); } catch { stats = {}; }
+      }
+      // Add missing cards
+      for (let c of cards) {
+        if (!stats[c.id]) stats[c.id] = { reviewed: 0, correct: 0, wrong: 0, difficult: false };
+      }
+      // Remove stats for deleted cards
+      Object.keys(stats).forEach(cid=>{
+        if (!cards.find(c=>c.id===cid)) delete stats[cid];
+      });
+      return stats;
+    }
+    function saveStats(stats) {
+      localStorage.setItem(STORAGE_KEY_STATS, JSON.stringify(stats));
+    }
+
+    // --- INITIALIZE ---
+    let cards = loadCards();
+    let stats = loadStats(cards);
+
+    // --- APP STATE ---
+    let mode = 'all'; // 'all' or 'difficult'
     let current = 0;
     let flipped = false;
+    let difficultList = () => cards.filter(card => stats[card.id]?.difficult);
 
+    // --- ELEMENTS ---
     const flashcard = document.getElementById('flashcard');
     const counter = document.getElementById('counter');
     const prevBtn = document.getElementById('prev-btn');
     const nextBtn = document.getElementById('next-btn');
     const flipBtn = document.getElementById('flip-btn');
+    const easyBtn = document.getElementById('easy-btn');
+    const hardBtn = document.getElementById('hard-btn');
     const importArea = document.getElementById('import');
     const importBtn = document.getElementById('import-btn');
-
+    const statReviewed = document.getElementById('stat-reviewed');
+    const statCorrect = document.getElementById('stat-correct');
+    const statDifficult = document.getElementById('stat-difficult');
+    const statMode = document.getElementById('stat-mode');
+    const modeAllBtn = document.getElementById('mode-all');
+    const modeDiffBtn = document.getElementById('mode-difficult');
+    // Helper: Get cards in current mode
+    function getCardList() {
+      if (mode === 'all') return cards;
+      return difficultList();
+    }
+    // --- SHOW CARD ---
     function showCard(idx) {
-      if (cards.length === 0) {
-        flashcard.textContent = "No cards loaded.";
+      let list = getCardList();
+      if (list.length === 0) {
+        flashcard.textContent = "No cards in this mode.";
         counter.textContent = '';
         return;
       }
-      current = (idx + cards.length) % cards.length;
+      current = (idx + list.length) % list.length;
       flipped = false;
       flashcard.classList.remove('flipped');
-      flashcard.textContent = cards[current].front;
-      counter.textContent = `Card ${current + 1} of ${cards.length}`;
+      flashcard.textContent = list[current].front;
+      counter.textContent = `Card ${current + 1} of ${list.length}`;
     }
-
+    // --- FLIP CARD ---
     function flipCard() {
-      if (!cards.length) return;
+      let list = getCardList();
+      if (!list.length) return;
       flipped = !flipped;
       flashcard.classList.toggle('flipped', flipped);
-      flashcard.textContent = flipped ? cards[current].back : cards[current].front;
+      flashcard.textContent = flipped ? list[current].back : list[current].front;
     }
+    // --- MARK EASY/HARD ---
+    function markEasy() {
+      let list = getCardList();
+      if (!list.length) return;
+      let c = list[current];
+      stats[c.id].reviewed += 1;
+      stats[c.id].correct += 1;
+      stats[c.id].difficult = false;
+      saveStats(stats);
+      updateStatsPanel();
+      showCard(current + 1);
+    }
+    function markHard() {
+      let list = getCardList();
+      if (!list.length) return;
+      let c = list[current];
+      stats[c.id].reviewed += 1;
+      stats[c.id].wrong += 1;
+      stats[c.id].difficult = true;
+      saveStats(stats);
+      updateStatsPanel();
+      showCard(current + 1);
+    }
+    // --- STATS PANEL ---
+    function updateStatsPanel() {
+      // Calculate stats
+      let total = cards.length;
+      let reviewed = Object.values(stats).reduce((a, s) => a + s.reviewed, 0);
+      let correct = Object.values(stats).reduce((a, s) => a + s.correct, 0);
+      let wrong = Object.values(stats).reduce((a, s) => a + s.wrong, 0);
+      let difficult = cards.filter(c => stats[c.id]?.difficult).length;
+      let percent = reviewed === 0 ? 0 : Math.round(100 * correct / reviewed);
+      statReviewed.textContent = reviewed;
+      statCorrect.textContent = percent + '%';
+      statDifficult.textContent = difficult;
+      statMode.textContent = mode === 'all' ? 'All' : 'Difficult';
+      // Mode button highlight
+      modeAllBtn.classList.toggle('active', mode === 'all');
+      modeDiffBtn.classList.toggle('active', mode === 'difficult');
+    }
+    // --- MODE SWITCH ---
+    modeAllBtn.onclick = () => {
+      mode = 'all';
+      updateStatsPanel();
+      showCard(0);
+    };
+    modeDiffBtn.onclick = () => {
+      mode = 'difficult';
+      updateStatsPanel();
+      showCard(0);
+    };
 
+    // --- BUTTON EVENTS ---
     prevBtn.onclick = () => { showCard(current - 1); };
     nextBtn.onclick = () => { showCard(current + 1); };
     flipBtn.onclick = flipCard;
     flashcard.onclick = flipCard;
     flashcard.onkeypress = (e) => { if (e.key === ' ' || e.key === 'Enter') flipCard(); };
+    easyBtn.onclick = markEasy;
+    hardBtn.onclick = markHard;
 
+    // --- IMPORT CARDS ---
     importBtn.onclick = () => {
       const newCards = parseCards(importArea.value);
       if (newCards.length) {
-        cards = newCards;
+        cards = newCards.map(c => ({ ...c, id: Math.random().toString(36).slice(2,12) }));
+        saveCards(cards);
+        stats = loadStats(cards); // reset stats for new set
+        saveStats(stats);
+        mode = 'all';
+        updateStatsPanel();
         showCard(0);
         alert(`Imported ${cards.length} cards!`);
       } else {
         alert("No valid cards found. Please check your format.");
       }
     };
-
     // Populate import area with current cards
     function cardsToText() {
       return cards.map(card => `${card.front},${card.back}`).join('\n');
     }
     importArea.value = cardsToText();
 
-    // Initial render
+    // --- INITIAL RENDER ---
+    updateStatsPanel();
     showCard(0);
   </script>
 </body>
