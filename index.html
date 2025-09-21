@@ -421,34 +421,34 @@
     <div class="side-panel">
       <!-- Statistics Panel -->
       <div id="stats">
-        <span>
-          <strong id="stat-reviewed">0</strong>
-          <span class="stat-label">Reviewed</span>
-        </span>
-        <div class="progress-bar-wrap" title="Card Progress">
-          <div class="progress-bar-inner" id="progress-reviewed"></div>
-        </div>
-        <span>
-          <strong id="stat-correct">0%</strong>
-          <span class="stat-label">Accuracy</span>
-        </span>
-        <div class="progress-bar-wrap" title="Accuracy">
-          <div class="progress-bar-inner" id="progress-accuracy"></div>
-        </div>
-        <span>
-          <strong id="stat-difficult">0</strong>
-          <span class="stat-label">Difficult</span>
-        </span>
-        <div class="progress-bar-wrap" title="Difficult Cards">
-          <div class="progress-bar-inner" id="progress-difficult"></div>
-        </div>
-        <span>
-          <strong id="stat-mode">All</strong>
-          <span class="stat-label">Mode</span>
-        </span>
+  <div class="stats-grid">
+    <div class="stat-item">
+      <strong id="stat-reviewed">0</strong>
+      <span class="stat-label">Reviewed</span>
+      <div class="progress-bar-wrap" title="Card Progress">
+        <div class="progress-bar-inner" id="progress-reviewed"></div>
       </div>
     </div>
+    <div class="stat-item">
+      <strong id="stat-correct">0%</strong>
+      <span class="stat-label">Accuracy</span>
+      <div class="progress-bar-wrap" title="Accuracy">
+        <div class="progress-bar-inner" id="progress-accuracy"></div>
+      </div>
+    </div>
+    <div class="stat-item">
+      <strong id="stat-difficult">0</strong>
+      <span class="stat-label">Difficult</span>
+      <div class="progress-bar-wrap" title="Difficult Cards">
+        <div class="progress-bar-inner" id="progress-difficult"></div>
+      </div>
+    </div>
+    <div class="stat-item">
+      <strong id="stat-mode">All</strong>
+      <span class="stat-label">Mode</span>
+    </div>
   </div>
+</div>
   <script>
     // --- STORAGE KEYS ---
     const STORAGE_KEY_CARDS = 'mom_flashcards_cards_v1';
