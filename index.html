@@ -29,6 +29,9 @@
       --gradient-card-flip: linear-gradient(120deg, #e3f2fd 90%, #b3e0ff 100%);
       --progress-bg: #fde0ef;
       --progress-bar: #e573a8;
+      --quiz-correct: #56c596;
+      --quiz-wrong: #f67280;
+      --quiz-neutral: #e3f2fd;
     }
     html, body {
       min-height: 100vh;
@@ -45,7 +48,6 @@
       align-items: center;
       min-height: 100vh;
     }
-    /* HEADER AREA */
     .hero-header {
       width: 100%;
       max-width: 700px;
@@ -113,7 +115,6 @@
       margin: 18px auto 0 auto;
       opacity: 0.7;
     }
-    /* TWO COLUMN LAYOUT ... (rest unchanged) */
     .container {
       display: flex;
       flex-direction: row;
@@ -146,6 +147,30 @@
       flex-direction: column;
       gap: 1.5em;
       filter: drop-shadow(var(--panel-shadow));
+    }
+    #mode-bar {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+    .mode-nav-btn {
+      background: var(--pastel-blue);
+      color: #234;
+      border: 2px solid var(--baby-blue);
+      font-size: 1.09em;
+      padding: 11px 19px;
+      border-radius: 12px;
+      font-family: 'Quicksand', Arial, sans-serif;
+      cursor: pointer;
+      font-weight: 700;
+      outline: none;
+      transition: background 0.18s, color 0.13s;
+    }
+    .mode-nav-btn.active,
+    .mode-nav-btn:focus {
+      background: var(--pink);
+      color: var(--strong-pink);
+      border: 2px solid var(--strong-pink);
     }
     /* FLASHCARD STYLES */
     #flashcard {
@@ -344,6 +369,128 @@
       width: 0%;
       transition: width 0.7s cubic-bezier(.61,1.13,.49,.98);
     }
+    /* QUIZ GAME STYLES */
+    #quiz-area, #matching-area {
+      background: var(--gradient-card);
+      border-radius: var(--border-radius);
+      box-shadow: 0 7px 32px 0 rgba(240, 98, 146, 0.14);
+      padding: 38px 18px 28px 18px;
+      width: 100%;
+      max-width: 520px;
+      margin-bottom: 18px;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+    }
+    #quiz-area.active, #matching-area.active {
+      display: flex;
+    }
+    #quiz-question {
+      font-size: 1.2em;
+      margin-bottom: 22px;
+      color: #3d405b;
+      text-align: center;
+      word-break: break-word;
+    }
+    #quiz-input {
+      padding: 10px 12px;
+      font-size: 1.08em;
+      border-radius: 9px;
+      border: 1.5px solid #bbc;
+      margin-bottom: 10px;
+      width: 90%;
+      font-family: 'Quicksand', Arial, sans-serif;
+      background: #fff;
+      color: #234;
+    }
+    #quiz-submit-btn {
+      background: var(--pastel-blue);
+      color: #234;
+      margin-bottom: 7px;
+    }
+    #quiz-feedback {
+      margin-top: 10px;
+      font-weight: 700;
+      font-size: 1.09em;
+    }
+    #quiz-feedback.correct {
+      color: var(--quiz-correct);
+    }
+    #quiz-feedback.wrong {
+      color: var(--quiz-wrong);
+    }
+    #quiz-progress {
+      margin-top: 15px;
+      font-size: 1.05em;
+      color: #a47cae;
+    }
+    #quiz-score {
+      font-size: 1.18em;
+      margin: 10px 0;
+    }
+    /* MATCHING GAME */
+    #matching-area .match-grid {
+      display: flex;
+      gap: 24px;
+      width: 100%;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+    .match-col {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      width: 47%;
+    }
+    .match-btn {
+      background: var(--quiz-neutral);
+      color: #234;
+      border: 2px solid #bbc;
+      border-radius: 10px;
+      padding: 13px 6px;
+      font-size: 1.05em;
+      cursor: pointer;
+      font-family: 'Quicksand', Arial, sans-serif;
+      font-weight: 600;
+      transition: background 0.15s, color 0.13s, border 0.13s;
+    }
+    .match-btn.selected {
+      background: var(--strong-pink);
+      color: #fff;
+      border: 2px solid var(--hard-red);
+    }
+    .match-btn.matched {
+      background: var(--easy-green);
+      color: #fff;
+      border: 2px solid var(--easy-green);
+      cursor: default;
+      opacity: 0.7;
+    }
+    .match-btn.incorrect {
+      background: var(--hard-red);
+      color: #fff;
+      border: 2px solid var(--hard-red);
+      animation: shakeMatch 0.4s;
+    }
+    @keyframes shakeMatch {
+      10% { transform: translateX(-7px);}
+      30% { transform: translateX(7px);}
+      50% { transform: translateX(-7px);}
+      80% { transform: translateX(7px);}
+      100% { transform: none;}
+    }
+    #matching-score {
+      margin-bottom: 7px;
+      font-size: 1.07em;
+      font-weight: 700;
+      color: #a47cae;
+    }
+    #matching-end-message {
+      font-size: 1.16em;
+      font-weight: 700;
+      margin-top: 12px;
+    }
+    /* RESPONSIVE */
     @media (max-width: 700px) {
       .stats-grid {
         grid-template-columns: 1fr;
@@ -351,6 +498,11 @@
       .stat-item {
         min-height: 60px;
       }
+      #quiz-area, #matching-area {
+        padding: 18px 2vw 13px 2vw;
+      }
+      .match-grid { flex-direction: column; gap: 16px;}
+      .match-col { width: 100%;}
     }
     @media (max-width: 950px) {
       .container {
@@ -397,14 +549,20 @@
 <body>
   <div class="hero-header">
     <h1>
-      <span class="hearts">💖💖</span>
-      Mom's Flashcards
+      <span class="hearts"></span>
+      💖Mom's Flashcards💖
     </h1>
-    <div class="subtitle">Made by Mahsa, your daughter</div>
+    <div class="subtitle">Made by Mahsa</div>
     <hr class="divider">
   </div>
   <div class="container">
     <div class="main-content">
+      <!-- Mode Nav Bar -->
+      <div id="mode-bar">
+        <button id="flashcard-mode-btn" class="mode-nav-btn active">Flashcards</button>
+        <button id="quiz-mode-btn" class="mode-nav-btn">Quiz</button>
+        <button id="matching-mode-btn" class="mode-nav-btn">Matching Game</button>
+      </div>
       <!-- Language Toggle -->
       <div id="lang-toggle-row" style="margin-bottom: 12px;">
         <button id="toggle-lang-btn" class="mode-btn" style="min-width:190px">
@@ -420,18 +578,40 @@
         <button id="mode-all" class="mode-btn active">All Cards</button>
         <button id="mode-difficult" class="mode-btn">Difficult Cards</button>
       </div>
-      <!-- Flashcard -->
-      <div id="flashcard" tabindex="0">Click to show answer</div>
-      <div id="counter"></div>
-      <div class="buttons">
-        <button id="prev-btn" aria-label="Previous card">&lt; Prev</button>
-        <button id="flip-btn" aria-label="Flip card">Flip</button>
-        <button id="next-btn" aria-label="Next card">Next &gt;</button>
+      <!-- Flashcard area -->
+      <div id="flashcard-area">
+        <div id="flashcard" tabindex="0">Click to show answer</div>
+        <div id="counter"></div>
+        <div class="buttons">
+          <button id="prev-btn" aria-label="Previous card">&lt; Prev</button>
+          <button id="flip-btn" aria-label="Flip card">Flip</button>
+          <button id="next-btn" aria-label="Next card">Next &gt;</button>
+        </div>
+        <!-- Mark difficulty -->
+        <div class="buttons">
+          <button id="easy-btn" class="easy-btn" aria-label="Mark card as Easy">Easy 👍</button>
+          <button id="hard-btn" class="hard-btn" aria-label="Mark card as Difficult">Difficult 😅</button>
+        </div>
       </div>
-      <!-- Mark difficulty -->
-      <div class="buttons">
-        <button id="easy-btn" class="easy-btn" aria-label="Mark card as Easy">Easy 👍</button>
-        <button id="hard-btn" class="hard-btn" aria-label="Mark card as Difficult">Difficult 😅</button>
+      <!-- Quiz area -->
+      <div id="quiz-area">
+        <div id="quiz-question"></div>
+        <input id="quiz-input" type="text" autocomplete="off" placeholder="Type your answer here...">
+        <button id="quiz-submit-btn">Submit</button>
+        <div id="quiz-feedback"></div>
+        <div id="quiz-progress"></div>
+        <div id="quiz-score"></div>
+        <button id="quiz-exit-btn" class="mode-btn" style="margin-top:15px;">Back to Flashcards</button>
+      </div>
+      <!-- Matching area -->
+      <div id="matching-area">
+        <div id="matching-score"></div>
+        <div class="match-grid">
+          <div class="match-col" id="match-left"></div>
+          <div class="match-col" id="match-right"></div>
+        </div>
+        <div id="matching-end-message"></div>
+        <button id="matching-exit-btn" class="mode-btn" style="margin-top:12px;">Back to Flashcards</button>
       </div>
       <!-- Import/Export Area -->
       <details id="import-area">
@@ -580,7 +760,6 @@ it's coming along,Está saliendo adelante
       if (!data) return parseCards(defaultCardsText);
       try {
         const arr = JSON.parse(data);
-        // Add id if missing (for older data)
         return arr.map(card => ({
           front: card.front,
           back: card.back,
@@ -591,18 +770,15 @@ it's coming along,Está saliendo adelante
     function saveCards(cards) {
       localStorage.setItem(STORAGE_KEY_CARDS, JSON.stringify(cards));
     }
-
     function loadStats(cards) {
       let data = localStorage.getItem(STORAGE_KEY_STATS);
       let stats = {};
       if (data) {
         try { stats = JSON.parse(data); } catch { stats = {}; }
       }
-      // Add missing cards
       for (let c of cards) {
         if (!stats[c.id]) stats[c.id] = { reviewed: 0, correct: 0, wrong: 0, difficult: false };
       }
-      // Remove stats for deleted cards
       Object.keys(stats).forEach(cid=>{
         if (!cards.find(c=>c.id===cid)) delete stats[cid];
       });
@@ -612,19 +788,20 @@ it's coming along,Está saliendo adelante
       localStorage.setItem(STORAGE_KEY_STATS, JSON.stringify(stats));
     }
 
-    // --- INITIALIZE ---
+    // --- STATE ---
     let cards = loadCards();
     let stats = loadStats(cards);
-
-    // --- APP STATE ---
     let mode = 'all'; // 'all' or 'difficult'
     let current = 0;
     let flipped = false;
-    let difficultList = () => cards.filter(card => stats[card.id]?.difficult);
-    let showEnglishFront = true; // true: English→Spanish, false: Spanish→English
-    let shuffleMode = false; // If true, next/prev are random cards
+    let showEnglishFront = true;
+    let shuffleMode = false;
+    let appMode = 'flashcard'; // 'flashcard', 'quiz', 'matching'
+    let quizState = null;
+    let matchingState = null;
 
     // --- ELEMENTS ---
+    const flashcardArea = document.getElementById('flashcard-area');
     const flashcard = document.getElementById('flashcard');
     const counter = document.getElementById('counter');
     const prevBtn = document.getElementById('prev-btn');
@@ -646,14 +823,52 @@ it's coming along,Está saliendo adelante
     const progressDifficult = document.getElementById('progress-difficult');
     const toggleLangBtn = document.getElementById('toggle-lang-btn');
     const shuffleBtn = document.getElementById('shuffle-btn');
+    // Mode nav
+    const flashcardModeBtn = document.getElementById('flashcard-mode-btn');
+    const quizModeBtn = document.getElementById('quiz-mode-btn');
+    const matchingModeBtn = document.getElementById('matching-mode-btn');
+    // Quiz elements
+    const quizArea = document.getElementById('quiz-area');
+    const quizQuestion = document.getElementById('quiz-question');
+    const quizInput = document.getElementById('quiz-input');
+    const quizSubmitBtn = document.getElementById('quiz-submit-btn');
+    const quizFeedback = document.getElementById('quiz-feedback');
+    const quizProgress = document.getElementById('quiz-progress');
+    const quizScore = document.getElementById('quiz-score');
+    const quizExitBtn = document.getElementById('quiz-exit-btn');
+    // Matching elements
+    const matchingArea = document.getElementById('matching-area');
+    const matchLeft = document.getElementById('match-left');
+    const matchRight = document.getElementById('match-right');
+    const matchingScore = document.getElementById('matching-score');
+    const matchingEndMsg = document.getElementById('matching-end-message');
+    const matchingExitBtn = document.getElementById('matching-exit-btn');
 
-    // Helper: Get cards in current mode
+    // --- HELPERS ---
+    function difficultList() {
+      return cards.filter(card => stats[card.id]?.difficult);
+    }
     function getCardList() {
       if (mode === 'all') return cards;
       return difficultList();
     }
-    // --- SHOW CARD with FADE IN (language aware) ---
+    function cardsToText() {
+      return cards.map(card => `${card.front},${card.back}`).join('\n');
+    }
+    function shuffleArray(array) {
+      let arr = array.slice();
+      for (let i = arr.length - 1; i > 0; i--) {
+        let j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
+    }
+    function normalize(str) {
+      return str.trim().toLowerCase().replace(/\s+/g, ' ');
+    }
+    // --- FLASHCARD LOGIC ---
     function showCard(idx) {
+      if (appMode !== 'flashcard') return;
       let list = getCardList();
       if (list.length === 0) {
         flashcard.textContent = "No cards in this mode.";
@@ -675,9 +890,8 @@ it's coming along,Está saliendo adelante
         flashcard.style.opacity = 1;
       }, 170);
     }
-
-    // --- FLIP CARD (language aware) ---
     function flipCard() {
+      if (appMode !== 'flashcard') return;
       let list = getCardList();
       if (!list.length) return;
       flipped = !flipped;
@@ -693,7 +907,6 @@ it's coming along,Está saliendo adelante
         flashcard.style.opacity = 1;
       }, 150);
     }
-    // --- NEXT & PREV ---
     function nextCard() {
       let list = getCardList();
       if (list.length === 0) return;
@@ -720,7 +933,6 @@ it's coming along,Está saliendo adelante
         showCard(current - 1);
       }
     }
-    // --- MARK EASY/HARD ---
     function markEasy() {
       let list = getCardList();
       if (!list.length) return;
@@ -751,7 +963,6 @@ it's coming along,Está saliendo adelante
       let wrong = Object.values(stats).reduce((a, s) => a + s.wrong, 0);
       let difficult = cards.filter(c => stats[c.id]?.difficult).length;
       let percent = reviewed === 0 ? 0 : Math.round(100 * correct / reviewed);
-
       statReviewed.textContent = reviewed;
       statCorrect.textContent = percent + '%';
       statDifficult.textContent = difficult;
@@ -765,17 +976,197 @@ it's coming along,Está saliendo adelante
       progressDifficult.style.width = difficultPerc + "%";
     }
     // --- MODE SWITCH ---
-    modeAllBtn.onclick = () => {
-      mode = 'all';
+    function setMode(newMode) {
+      mode = newMode;
       updateStatsPanel();
       showCard(0);
-    };
-    modeDiffBtn.onclick = () => {
-      mode = 'difficult';
+    }
+    // --- APP MODE SWITCH (Flashcards/Quiz/Matching) ---
+    function setAppMode(newMode) {
+      appMode = newMode;
+      // Mode nav highlight
+      flashcardModeBtn.classList.toggle('active', appMode === 'flashcard');
+      quizModeBtn.classList.toggle('active', appMode === 'quiz');
+      matchingModeBtn.classList.toggle('active', appMode === 'matching');
+      // Show/hide UI
+      flashcardArea.style.display = appMode === 'flashcard' ? '' : 'none';
+      quizArea.classList.toggle('active', appMode === 'quiz');
+      matchingArea.classList.toggle('active', appMode === 'matching');
+      if (appMode === 'flashcard') {
+        showCard(current);
+      } else if (appMode === 'quiz') {
+        startQuiz();
+      } else if (appMode === 'matching') {
+        startMatching();
+      }
+    }
+    // --- QUIZ GAME LOGIC ---
+    function startQuiz() {
+      let list = getCardList();
+      if (list.length === 0) {
+        quizArea.innerHTML = "<div style='color:#b44'>No cards in this mode.</div><button id='quiz-exit-btn2' class='mode-btn' style='margin-top:15px;'>Back to Flashcards</button>";
+        document.getElementById('quiz-exit-btn2').onclick = () => setAppMode('flashcard');
+        return;
+      }
+      quizState = {
+        questions: shuffleArray(list.map(c=>({...c}))),
+        index: 0,
+        correct: 0,
+        wrong: 0,
+        answered: [],
+      };
+      quizInput.value = '';
+      quizFeedback.textContent = '';
+      quizScore.textContent = '';
+      quizProgress.textContent = '';
+      showQuizQuestion();
+    }
+    function showQuizQuestion() {
+      const list = quizState.questions;
+      const idx = quizState.index;
+      if (idx >= list.length) {
+        quizQuestion.textContent = "Quiz Finished!";
+        quizInput.style.display = "none";
+        quizSubmitBtn.style.display = "none";
+        quizProgress.textContent = "";
+        quizScore.textContent = `Score: ${quizState.correct}/${list.length}`;
+        quizFeedback.textContent = "";
+        quizFeedback.className = "";
+        quizArea.scrollIntoView({behavior: "smooth"});
+        return;
+      }
+      quizInput.style.display = "";
+      quizSubmitBtn.style.display = "";
+      quizInput.value = '';
+      quizInput.focus();
+      quizFeedback.textContent = '';
+      quizScore.textContent = '';
+      quizProgress.textContent = `Question ${idx+1} of ${list.length}`;
+      quizQuestion.textContent = showEnglishFront ? list[idx].front : list[idx].back;
+    }
+    quizSubmitBtn.onclick = function() {
+      const list = quizState.questions;
+      const idx = quizState.index;
+      const card = list[idx];
+      let correctAnswer = showEnglishFront ? card.back : card.front;
+      let userAns = quizInput.value;
+      if (normalize(userAns) === normalize(correctAnswer)) {
+        quizFeedback.textContent = "Correct!";
+        quizFeedback.className = "correct";
+        quizState.correct++;
+        stats[card.id].reviewed++;
+        stats[card.id].correct++;
+        stats[card.id].difficult = false;
+      } else {
+        quizFeedback.textContent = `Wrong! Correct answer: ${correctAnswer}`;
+        quizFeedback.className = "wrong";
+        quizState.wrong++;
+        stats[card.id].reviewed++;
+        stats[card.id].wrong++;
+        stats[card.id].difficult = true;
+      }
+      saveStats(stats);
       updateStatsPanel();
-      showCard(0);
+      quizState.index++;
+      setTimeout(showQuizQuestion, 1100);
     };
-    // --- BUTTON EVENTS ---
+    quizInput.onkeypress = function(e) {
+      if (e.key === "Enter") quizSubmitBtn.onclick();
+    };
+    quizExitBtn.onclick = function() {
+      setAppMode('flashcard');
+    };
+    // --- MATCHING GAME LOGIC ---
+    function startMatching() {
+      let list = getCardList();
+      if (list.length === 0) {
+        matchingArea.innerHTML = "<div style='color:#b44'>No cards in this mode.</div><button id='matching-exit-btn2' class='mode-btn' style='margin-top:12px;'>Back to Flashcards</button>";
+        document.getElementById('matching-exit-btn2').onclick = () => setAppMode('flashcard');
+        return;
+      }
+      let left = shuffleArray(list.map(c=>({id:c.id, txt:showEnglishFront?c.front:c.back})));
+      let right = shuffleArray(list.map(c=>({id:c.id, txt:showEnglishFront?c.back:c.front})));
+      matchingState = {
+        left, right,
+        leftSel: null,
+        rightSel: null,
+        matched: [],
+        tries: 0,
+        total: left.length,
+        ended: false
+      };
+      matchingScore.textContent = `Score: 0/${left.length}`;
+      matchingEndMsg.textContent = '';
+      renderMatching();
+    }
+    function renderMatching() {
+      matchLeft.innerHTML = '';
+      matchRight.innerHTML = '';
+      const st = matchingState;
+      st.left.forEach((item, idx) => {
+        let btn = document.createElement('button');
+        btn.className = 'match-btn';
+        if (st.leftSel === idx) btn.classList.add('selected');
+        if (st.matched.includes(item.id)) btn.classList.add('matched');
+        btn.textContent = item.txt;
+        btn.disabled = st.matched.includes(item.id) || st.ended;
+        btn.onclick = function() {
+          st.leftSel = idx;
+          st.rightSel = null;
+          renderMatching();
+        };
+        matchLeft.appendChild(btn);
+      });
+      st.right.forEach((item, idx) => {
+        let btn = document.createElement('button');
+        btn.className = 'match-btn';
+        if (st.rightSel === idx) btn.classList.add('selected');
+        if (st.matched.includes(item.id)) btn.classList.add('matched');
+        btn.textContent = item.txt;
+        btn.disabled = st.matched.includes(item.id) || st.ended;
+        btn.onclick = function() {
+          if (st.leftSel === null || st.matched.includes(item.id)) return;
+          st.rightSel = idx;
+          let leftID = st.left[st.leftSel].id, rightID = item.id;
+          if (leftID === rightID) {
+            st.matched.push(leftID);
+            matchingScore.textContent = `Score: ${st.matched.length}/${st.total}`;
+            st.leftSel = null;
+            st.rightSel = null;
+            if (st.matched.length === st.total) {
+              st.ended = true;
+              matchingEndMsg.textContent = "Game finished! Well done!";
+            }
+            renderMatching();
+          } else {
+            // Mark both as incorrect, add to difficult
+            stats[leftID].difficult = true; stats[item.id].difficult = true;
+            stats[leftID].wrong = (stats[leftID].wrong||0)+1;
+            stats[item.id].wrong = (stats[item.id].wrong||0)+1;
+            saveStats(stats);
+            updateStatsPanel();
+            // Animate
+            let leftBtns = matchLeft.querySelectorAll('.match-btn');
+            let rightBtns = matchRight.querySelectorAll('.match-btn');
+            leftBtns[st.leftSel].classList.add('incorrect');
+            rightBtns[idx].classList.add('incorrect');
+            setTimeout(()=>{
+              leftBtns[st.leftSel].classList.remove('incorrect');
+              rightBtns[idx].classList.remove('incorrect');
+              st.leftSel = null; st.rightSel = null;
+              renderMatching();
+            }, 600);
+          }
+        };
+        matchRight.appendChild(btn);
+      });
+    }
+    matchingExitBtn.onclick = function() {
+      setAppMode('flashcard');
+    };
+    // --- UI EVENTS ---
+    modeAllBtn.onclick = () => setMode('all');
+    modeDiffBtn.onclick = () => setMode('difficult');
     prevBtn.onclick = prevCard;
     nextBtn.onclick = nextCard;
     flipBtn.onclick = flipCard;
@@ -783,15 +1174,13 @@ it's coming along,Está saliendo adelante
     flashcard.onkeypress = (e) => { if (e.key === ' ' || e.key === 'Enter') flipCard(); };
     easyBtn.onclick = markEasy;
     hardBtn.onclick = markHard;
-    // --- Language toggle ---
     toggleLangBtn.onclick = () => {
       showEnglishFront = !showEnglishFront;
       toggleLangBtn.textContent = showEnglishFront
         ? "Show English → Spanish"
         : "Show Spanish → English";
-      showCard(current);
+      if (appMode === 'flashcard') showCard(current);
     };
-    // --- Shuffle Mode Button ---
     shuffleBtn.onclick = () => {
       shuffleMode = !shuffleMode;
       shuffleBtn.classList.toggle('active', shuffleMode);
@@ -799,13 +1188,12 @@ it's coming along,Está saliendo adelante
         ? "Random Mode ON"
         : "Shuffle / Random Mode";
     };
-    // --- IMPORT CARDS ---
     importBtn.onclick = () => {
       const newCards = parseCards(importArea.value);
       if (newCards.length) {
         cards = newCards.map(c => ({ ...c, id: Math.random().toString(36).slice(2,12) }));
         saveCards(cards);
-        stats = loadStats(cards); // reset stats for new set
+        stats = loadStats(cards);
         saveStats(stats);
         mode = 'all';
         updateStatsPanel();
@@ -815,7 +1203,6 @@ it's coming along,Está saliendo adelante
         alert("No valid cards found. Please check your format.");
       }
     };
-    // --- RESET TO DEFAULT CARDS ---
     resetBtn.onclick = () => {
       if (confirm("Are you sure you want to reset to the default cards? All current cards will be replaced.")) {
         cards = parseCards(defaultCardsText);
@@ -829,14 +1216,15 @@ it's coming along,Está saliendo adelante
         alert("Reset to default cards!");
       }
     };
+    // App mode nav bar
+    flashcardModeBtn.onclick = () => setAppMode('flashcard');
+    quizModeBtn.onclick = () => setAppMode('quiz');
+    matchingModeBtn.onclick = () => setAppMode('matching');
     // Populate import area with current cards
-    function cardsToText() {
-      return cards.map(card => `${card.front},${card.back}`).join('\n');
-    }
     importArea.value = cardsToText();
     // --- INITIAL RENDER ---
     updateStatsPanel();
-    showCard(0);
+    setAppMode('flashcard');
   </script>
 </body>
 </html>
