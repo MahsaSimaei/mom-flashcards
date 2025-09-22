@@ -79,13 +79,12 @@
       justify-content: center;
       gap: 0.3em;
       line-height: 1.15;
-      /* Slight curve */
     }
     .hero-header .hearts {
       font-size: 1.25em;
-      margin-right: 0.15em;
-      /* optional: add some text-shadow for visual pop */
+      margin-right: 0.12em;
       text-shadow: 0 2px 8px #fde0ef88;
+      display: inline-block;
     }
     .subtitle {
       font-size: 1.16rem;
@@ -282,31 +281,40 @@
     #import-btn:hover, #import-btn:focus {
       background: #399b6c;
     }
-    /* SIDE PANEL STATS */
+    /* 2x2 Stats Grid for Side Panel */
     #stats {
       background: var(--gradient-panel);
       border-radius: var(--border-radius);
       box-shadow: var(--panel-shadow);
       padding: 26px 22px 22px 22px;
-      display: flex;
-      flex-direction: column;
-      gap: 1.7em;
-      font-size: 1.07em;
-      font-weight: 500;
-      color: #234;
       width: 100%;
       min-width: 0;
       margin-bottom: 0.8em;
       position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
-    #stats span {
+    .stats-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.2em 1.5em;
+      width: 100%;
+    }
+    .stat-item {
       display: flex;
       flex-direction: column;
       align-items: flex-start;
-      margin-bottom: 0.5em;
+      background: rgba(255,255,255,0.13);
+      border-radius: 13px;
+      padding: 8px 10px 8px 12px;
+      min-width: 0;
+      box-sizing: border-box;
+      min-height: 70px;
+      box-shadow: 0 2px 8px #f8bbd01a;
     }
-    #stats strong {
-      font-size: 1.2em;
+    .stat-item strong {
+      font-size: 1.22em;
       color: var(--strong-pink);
       font-weight: 700;
       letter-spacing: 1px;
@@ -317,14 +325,13 @@
       font-weight: 500;
       color: #486;
     }
-    /* ANIMATED PROGRESS BAR */
     .progress-bar-wrap {
       width: 100%;
-      max-width: 230px;
-      height: 18px;
+      max-width: 100%;
+      height: 13px;
       background: var(--progress-bg);
       border-radius: 11px;
-      margin: 10px 0 4px 0;
+      margin: 7px 0 0 0;
       box-shadow: 0 1px 5px #eee4;
       overflow: hidden;
       display: flex;
@@ -337,7 +344,14 @@
       width: 0%;
       transition: width 0.7s cubic-bezier(.61,1.13,.49,.98);
     }
-    /* RESPONSIVE */
+    @media (max-width: 700px) {
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+      .stat-item {
+        min-height: 60px;
+      }
+    }
     @media (max-width: 950px) {
       .container {
         flex-direction: column;
@@ -383,14 +397,20 @@
 <body>
   <div class="hero-header">
     <h1>
-      <span class="hearts"></span>
-      💖Mom's Flashcards💖
+      <span class="hearts">💖💖</span>
+      Mom's Flashcards
     </h1>
-    <div class="subtitle">Made by Mahsa</div>
+    <div class="subtitle">Made by Mahsa, your daughter</div>
     <hr class="divider">
   </div>
   <div class="container">
     <div class="main-content">
+      <!-- Language Toggle -->
+      <div id="lang-toggle-row" style="margin-bottom: 12px;">
+        <button id="toggle-lang-btn" class="mode-btn" style="min-width:190px">
+          Show English → Spanish
+        </button>
+      </div>
       <!-- Mode Switcher -->
       <div class="buttons" style="margin-bottom:0.7em;">
         <button id="mode-all" class="mode-btn active">All Cards</button>
@@ -421,34 +441,36 @@
     <div class="side-panel">
       <!-- Statistics Panel -->
       <div id="stats">
-  <div class="stats-grid">
-    <div class="stat-item">
-      <strong id="stat-reviewed">0</strong>
-      <span class="stat-label">Reviewed</span>
-      <div class="progress-bar-wrap" title="Card Progress">
-        <div class="progress-bar-inner" id="progress-reviewed"></div>
+        <div class="stats-grid">
+          <div class="stat-item">
+            <strong id="stat-reviewed">0</strong>
+            <span class="stat-label">Reviewed</span>
+            <div class="progress-bar-wrap" title="Card Progress">
+              <div class="progress-bar-inner" id="progress-reviewed"></div>
+            </div>
+          </div>
+          <div class="stat-item">
+            <strong id="stat-correct">0%</strong>
+            <span class="stat-label">Accuracy</span>
+            <div class="progress-bar-wrap" title="Accuracy">
+              <div class="progress-bar-inner" id="progress-accuracy"></div>
+            </div>
+          </div>
+          <div class="stat-item">
+            <strong id="stat-difficult">0</strong>
+            <span class="stat-label">Difficult</span>
+            <div class="progress-bar-wrap" title="Difficult Cards">
+              <div class="progress-bar-inner" id="progress-difficult"></div>
+            </div>
+          </div>
+          <div class="stat-item">
+            <strong id="stat-mode">All</strong>
+            <span class="stat-label">Mode</span>
+          </div>
+        </div>
       </div>
-    </div>
-    <div class="stat-item">
-      <strong id="stat-correct">0%</strong>
-      <span class="stat-label">Accuracy</span>
-      <div class="progress-bar-wrap" title="Accuracy">
-        <div class="progress-bar-inner" id="progress-accuracy"></div>
-      </div>
-    </div>
-    <div class="stat-item">
-      <strong id="stat-difficult">0</strong>
-      <span class="stat-label">Difficult</span>
-      <div class="progress-bar-wrap" title="Difficult Cards">
-        <div class="progress-bar-inner" id="progress-difficult"></div>
-      </div>
-    </div>
-    <div class="stat-item">
-      <strong id="stat-mode">All</strong>
-      <span class="stat-label">Mode</span>
     </div>
   </div>
-</div>
   <script>
     // --- STORAGE KEYS ---
     const STORAGE_KEY_CARDS = 'mom_flashcards_cards_v1';
@@ -594,6 +616,7 @@ it's coming along,Está saliendo adelante
     let current = 0;
     let flipped = false;
     let difficultList = () => cards.filter(card => stats[card.id]?.difficult);
+    let showEnglishFront = true; // true: English→Spanish, false: Spanish→English
 
     // --- ELEMENTS ---
     const flashcard = document.getElementById('flashcard');
@@ -615,12 +638,15 @@ it's coming along,Está saliendo adelante
     const progressReviewed = document.getElementById('progress-reviewed');
     const progressAccuracy = document.getElementById('progress-accuracy');
     const progressDifficult = document.getElementById('progress-difficult');
+    // Language toggle
+    const toggleLangBtn = document.getElementById('toggle-lang-btn');
+
     // Helper: Get cards in current mode
     function getCardList() {
       if (mode === 'all') return cards;
       return difficultList();
     }
-    // --- SHOW CARD with FADE IN ---
+    // --- SHOW CARD with FADE IN (language aware) ---
     function showCard(idx) {
       let list = getCardList();
       if (list.length === 0) {
@@ -631,28 +657,30 @@ it's coming along,Está saliendo adelante
       current = (idx + list.length) % list.length;
       flipped = false;
       flashcard.classList.remove('flipped');
-      // Fade out, then change, then fade in
+      const card = list[current];
       flashcard.style.opacity = 0;
       setTimeout(() => {
-        flashcard.textContent = list[current].front;
+        flashcard.textContent = showEnglishFront ? card.front : card.back;
         counter.textContent = `Card ${current + 1} of ${list.length}`;
         flashcard.classList.remove('flipped');
-        flashcard.style.animation = "none"; // reset animation
-        void flashcard.offsetWidth; // force reflow
+        flashcard.style.animation = "none";
+        void flashcard.offsetWidth;
         flashcard.style.animation = null;
         flashcard.style.opacity = 1;
       }, 170);
     }
-    // --- FLIP CARD ---
+
+    // --- FLIP CARD (language aware) ---
     function flipCard() {
       let list = getCardList();
       if (!list.length) return;
       flipped = !flipped;
       flashcard.classList.toggle('flipped', flipped);
-      // Fade out, then flip content, then fade in
+      const card = list[current];
       flashcard.style.opacity = 0;
       setTimeout(() => {
-        flashcard.textContent = flipped ? list[current].back : list[current].front;
+        if (flipped) flashcard.textContent = showEnglishFront ? card.back : card.front;
+        else flashcard.textContent = showEnglishFront ? card.front : card.back;
         flashcard.style.animation = "none";
         void flashcard.offsetWidth;
         flashcard.style.animation = null;
@@ -699,12 +727,9 @@ it's coming along,Está saliendo adelante
       modeAllBtn.classList.toggle('active', mode === 'all');
       modeDiffBtn.classList.toggle('active', mode === 'difficult');
       // Progress bars (animated)
-      // Card progress: reviewed / total (max 100%)
       let reviewedPerc = total ? Math.min(100, Math.round((reviewed/total)*100)) : 0;
       progressReviewed.style.width = reviewedPerc + "%";
-      // Accuracy: correct / reviewed
       progressAccuracy.style.width = percent + "%";
-      // Difficult: difficult / total (max 100%)
       let difficultPerc = total ? Math.min(100, Math.round((difficult/total)*100)) : 0;
       progressDifficult.style.width = difficultPerc + "%";
     }
@@ -727,6 +752,14 @@ it's coming along,Está saliendo adelante
     flashcard.onkeypress = (e) => { if (e.key === ' ' || e.key === 'Enter') flipCard(); };
     easyBtn.onclick = markEasy;
     hardBtn.onclick = markHard;
+    // --- Language toggle ---
+    toggleLangBtn.onclick = () => {
+      showEnglishFront = !showEnglishFront;
+      toggleLangBtn.textContent = showEnglishFront
+        ? "Show English → Spanish"
+        : "Show Spanish → English";
+      showCard(current);
+    };
     // --- IMPORT CARDS ---
     importBtn.onclick = () => {
       const newCards = parseCards(importArea.value);
