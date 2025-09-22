@@ -737,10 +737,352 @@
       </div>
     </div>
   </div>
- <script>
-    // ... ALL setup code as before (state, helpers, etc.) ...
-    // --- ADD/REPLACE THESE: ---
-    let quizType = "mc"; // or "write"
+  <script>
+    // --- STORAGE KEYS ---
+    const STORAGE_KEY_CARDS = 'mom_flashcards_cards_v1';
+    const STORAGE_KEY_STATS = 'mom_flashcards_stats_v1';
+
+    // --- DEFAULT CARDS ---
+    const defaultCardsText = `
+the brake didn't work: ترمز کار نمی‌کرد,El freno no funcionó
+I'm running a fever,Tengo fiebre
+It just came out of the oven,Acaba de salir del horno
+This shirt looks good on me?,¿Me queda bien esta camisa?
+Hold on a minute!,¡Espera un minuto!
+Nephew,Sobrino
+Fountain,Fuente
+The brake didn't work,El freno no funcionó
+I neither smoke nor drink,No fumo ni bebo
+jacket pocket,bolsillo de la chaqueta
+make friend,Hacer amiga
+the closet ATM,el cajero automático del armario
+zucchini,calabacín
+I'm heading home,voy a casa
+Could you say that again please?,¿Podrías decirlo de nuevo?
+I was wondering if I could borrow your notes,¿Puedo prestar tus notas?
+Could you give me a hand?,¿Podrías echarme una mano? ¿Me puedes ayudar?
+I'm sorry to hear that,Lo siento mucho
+I'll let you know,Te lo avisaré
+I will call you back,Te llamaré de nuevo
+I can't hear you,No te puedo escuchar
+I get off work at 6,Mi trabajo termina a las 6
+I'm coming to pick you up,Estoy en camino para recogerte
+Nonsense,Sin sentido
+as we age,a medida que envejecemos
+Sesame,Sésamo
+companion,compañera
+a small handful,un pequeño puñado
+rely,confiar
+miracle,milagro
+had eased,se había aliviado
+soak stir and sip,remojar, remover y beber
+pumpkin seeds,semillas de calabaza
+resilience,resiliencia
+Stillness,Quietud
+embody,encarnar
+Hemp seeds,semillas de cáñamo
+sauce,salsa
+sesame paste,خمیر کنجد
+grace,gracia
+humble way,manera humilde
+manera humilde,perseguir a la juventud
+dye,teñir
+curly hair,cabello rizado, موی فرفری
+follow your doctor's advice,Siga los consejos de su médico
+long time no see,mucho tiempo sin verlo
+How's it going?,¿Cómo va todo?
+How have you been?,¿Cómo has estado?
+I think so too.,Yo también lo creo.
+I'm not sure about that.,No estoy seguro de eso.
+that sounds great,Suena genial.
+I'm looking forward to it.,Estoy deseando que llegue.
+no worries,No te preocupes
+would you like me to call him,¿Quieres que lo llame?
+Do you mind if I open the door,¿Te importa si abro la puerta?
+I'd be happy to help you.,Estaría encantado de ayudarte.
+I'm running late.,Voy con retraso.
+I'll be there in 10 minutes.,Estaré allí en 10 minutos.
+what are you up to today?,¿Qué estás haciendo hoy?
+not much just relaxing at home.,No mucho, solo descansando en casa.
+Let's catch up soon.,Pongámonos al día pronto.
+I'll get back to you,Me pondré en contacto contigo enseguida.
+what do you mean?,¿Qué quieres decir?
+let me think about it,Déjame pensarlo
+that makes sense.,Eso tiene sentido.
+I don't no idea,No tengo ni idea
+that's a good point.,Ese es un buen punto.
+it was nice talking to you.,Fue agradable hablar contigo.
+take care,Cuídate
+see you around,Nos vemos
+keep in touch,mantenerse en contacto
+fairly well,bastante bien, نسبamente bien
+at length my wish was realized.,Al final, mi deseo se hizo realidad.
+that makes no sense at all.,Eso no tiene ningún sentido.
+I can't get the lid off.,No puedo quitar la tapa.
+half a loaf is better than none.,Medio pan es mejor que nada.
+you bet!,Apuesto a que sí!
+jogging,correr
+it's coming along,Está saliendo adelante
+    `.trim();
+
+    // --- CARD PARSING ---
+    function parseCards(text) {
+      return text.split('\n').map(line => {
+        // Allow commas in back, so only first comma splits
+        let [front, ...backArr] = line.split(',');
+        let back = backArr.join(',').trim();
+        return { front: front.trim(), back: back, id: Math.random().toString(36).slice(2,12) };
+      }).filter(card => card.front && card.back);
+    }
+
+    // --- STORAGE: Load & Save ---
+    function loadCards() {
+      let data = localStorage.getItem(STORAGE_KEY_CARDS);
+      if (!data) return parseCards(defaultCardsText);
+      try {
+        const arr = JSON.parse(data);
+        return arr.map(card => ({
+          front: card.front,
+          back: card.back,
+          id: card.id || Math.random().toString(36).slice(2,12)
+        }));
+      } catch { return parseCards(defaultCardsText); }
+    }
+    function saveCards(cards) {
+      localStorage.setItem(STORAGE_KEY_CARDS, JSON.stringify(cards));
+    }
+    function loadStats(cards) {
+      let data = localStorage.getItem(STORAGE_KEY_STATS);
+      let stats = {};
+      if (data) {
+        try { stats = JSON.parse(data); } catch { stats = {}; }
+      }
+      for (let c of cards) {
+        if (!stats[c.id]) stats[c.id] = { reviewed: 0, correct: 0, wrong: 0, difficult: false };
+      }
+      Object.keys(stats).forEach(cid=>{
+        if (!cards.find(c=>c.id===cid)) delete stats[cid];
+      });
+      return stats;
+    }
+    function saveStats(stats) {
+      localStorage.setItem(STORAGE_KEY_STATS, JSON.stringify(stats));
+    }
+
+    // --- STATE ---
+    let cards = loadCards();
+    let stats = loadStats(cards);
+    let mode = 'all'; // 'all' or 'difficult'
+    let current = 0;
+    let flipped = false;
+    let showEnglishFront = true;
+    let shuffleMode = false;
+    let appMode = 'flashcard'; // 'flashcard', 'quiz', 'matching'
+    let quizState = null;
+    let matchingState = null;
+
+    // --- ELEMENTS ---
+    const flashcardArea = document.getElementById('flashcard-area');
+    const flashcard = document.getElementById('flashcard');
+    const counter = document.getElementById('counter');
+    const prevBtn = document.getElementById('prev-btn');
+    const nextBtn = document.getElementById('next-btn');
+    const flipBtn = document.getElementById('flip-btn');
+    const easyBtn = document.getElementById('easy-btn');
+    const hardBtn = document.getElementById('hard-btn');
+    const importArea = document.getElementById('import');
+    const importBtn = document.getElementById('import-btn');
+    const resetBtn = document.getElementById('reset-btn');
+    const statReviewed = document.getElementById('stat-reviewed');
+    const statCorrect = document.getElementById('stat-correct');
+    const statDifficult = document.getElementById('stat-difficult');
+    const statMode = document.getElementById('stat-mode');
+    const modeAllBtn = document.getElementById('mode-all');
+    const modeDiffBtn = document.getElementById('mode-difficult');
+    const progressReviewed = document.getElementById('progress-reviewed');
+    const progressAccuracy = document.getElementById('progress-accuracy');
+    const progressDifficult = document.getElementById('progress-difficult');
+    const toggleLangBtn = document.getElementById('toggle-lang-btn');
+    const shuffleBtn = document.getElementById('shuffle-btn');
+    // Mode nav
+    const flashcardModeBtn = document.getElementById('flashcard-mode-btn');
+    const quizModeBtn = document.getElementById('quiz-mode-btn');
+    const matchingModeBtn = document.getElementById('matching-mode-btn');
+    // Quiz elements
+    const quizArea = document.getElementById('quiz-area');
+    const quizQuestion = document.getElementById('quiz-question');
+    const quizInput = document.getElementById('quiz-input');
+    const quizSubmitBtn = document.getElementById('quiz-submit-btn');
+    const quizFeedback = document.getElementById('quiz-feedback');
+    const quizProgress = document.getElementById('quiz-progress');
+    const quizScore = document.getElementById('quiz-score');
+    const quizExitBtn = document.getElementById('quiz-exit-btn');
+    // Matching elements
+    const matchingArea = document.getElementById('matching-area');
+    const matchLeft = document.getElementById('match-left');
+    const matchRight = document.getElementById('match-right');
+    const matchingScore = document.getElementById('matching-score');
+    const matchingEndMsg = document.getElementById('matching-end-message');
+    const matchingExitBtn = document.getElementById('matching-exit-btn');
+
+    // --- HELPERS ---
+    function difficultList() {
+      return cards.filter(card => stats[card.id]?.difficult);
+    }
+    function getCardList() {
+      if (mode === 'all') return cards;
+      return difficultList();
+    }
+    function cardsToText() {
+      return cards.map(card => `${card.front},${card.back}`).join('\n');
+    }
+    function shuffleArray(array) {
+      let arr = array.slice();
+      for (let i = arr.length - 1; i > 0; i--) {
+        let j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
+    }
+    function normalize(str) {
+      return str.trim().toLowerCase().replace(/\s+/g, ' ');
+    }
+    // --- FLASHCARD LOGIC ---
+    function showCard(idx) {
+      if (appMode !== 'flashcard') return;
+      let list = getCardList();
+      if (list.length === 0) {
+        flashcard.textContent = "No cards in this mode.";
+        counter.textContent = '';
+        return;
+      }
+      current = (idx + list.length) % list.length;
+      flipped = false;
+      flashcard.classList.remove('flipped');
+      const card = list[current];
+      flashcard.style.opacity = 0;
+      setTimeout(() => {
+        flashcard.textContent = showEnglishFront ? card.front : card.back;
+        counter.textContent = `Card ${current + 1} of ${list.length}`;
+        flashcard.classList.remove('flipped');
+        flashcard.style.animation = "none";
+        void flashcard.offsetWidth;
+        flashcard.style.animation = null;
+        flashcard.style.opacity = 1;
+      }, 170);
+    }
+    function flipCard() {
+      if (appMode !== 'flashcard') return;
+      let list = getCardList();
+      if (!list.length) return;
+      flipped = !flipped;
+      flashcard.classList.toggle('flipped', flipped);
+      const card = list[current];
+      flashcard.style.opacity = 0;
+      setTimeout(() => {
+        if (flipped) flashcard.textContent = showEnglishFront ? card.back : card.front;
+        else flashcard.textContent = showEnglishFront ? card.front : card.back;
+        flashcard.style.animation = "none";
+        void flashcard.offsetWidth;
+        flashcard.style.animation = null;
+        flashcard.style.opacity = 1;
+      }, 150);
+    }
+    function nextCard() {
+      let list = getCardList();
+      if (list.length === 0) return;
+      if (shuffleMode) {
+        let idx;
+        do {
+          idx = Math.floor(Math.random() * list.length);
+        } while (list.length > 1 && idx === current);
+        showCard(idx);
+      } else {
+        showCard(current + 1);
+      }
+    }
+    function prevCard() {
+      let list = getCardList();
+      if (list.length === 0) return;
+      if (shuffleMode) {
+        let idx;
+        do {
+          idx = Math.floor(Math.random() * list.length);
+        } while (list.length > 1 && idx === current);
+        showCard(idx);
+      } else {
+        showCard(current - 1);
+      }
+    }
+    function markEasy() {
+      let list = getCardList();
+      if (!list.length) return;
+      let c = list[current];
+      stats[c.id].reviewed += 1;
+      stats[c.id].correct += 1;
+      stats[c.id].difficult = false;
+      saveStats(stats);
+      updateStatsPanel();
+      nextCard();
+    }
+    function markHard() {
+      let list = getCardList();
+      if (!list.length) return;
+      let c = list[current];
+      stats[c.id].reviewed += 1;
+      stats[c.id].wrong += 1;
+      stats[c.id].difficult = true;
+      saveStats(stats);
+      updateStatsPanel();
+      nextCard();
+    }
+    // --- STATS PANEL ---
+    function updateStatsPanel() {
+      let total = cards.length;
+      let reviewed = Object.values(stats).reduce((a, s) => a + s.reviewed, 0);
+      let correct = Object.values(stats).reduce((a, s) => a + s.correct, 0);
+      let wrong = Object.values(stats).reduce((a, s) => a + s.wrong, 0);
+      let difficult = cards.filter(c => stats[c.id]?.difficult).length;
+      let percent = reviewed === 0 ? 0 : Math.round(100 * correct / reviewed);
+      statReviewed.textContent = reviewed;
+      statCorrect.textContent = percent + '%';
+      statDifficult.textContent = difficult;
+      statMode.textContent = mode === 'all' ? 'All' : 'Difficult';
+      modeAllBtn.classList.toggle('active', mode === 'all');
+      modeDiffBtn.classList.toggle('active', mode === 'difficult');
+      let reviewedPerc = total ? Math.min(100, Math.round((reviewed/total)*100)) : 0;
+      progressReviewed.style.width = reviewedPerc + "%";
+      progressAccuracy.style.width = percent + "%";
+      let difficultPerc = total ? Math.min(100, Math.round((difficult/total)*100)) : 0;
+      progressDifficult.style.width = difficultPerc + "%";
+    }
+    // --- MODE SWITCH ---
+    function setMode(newMode) {
+      mode = newMode;
+      updateStatsPanel();
+      showCard(0);
+    }
+    // --- APP MODE SWITCH (Flashcards/Quiz/Matching) ---
+    function setAppMode(newMode) {
+      appMode = newMode;
+      // Mode nav highlight
+      flashcardModeBtn.classList.toggle('active', appMode === 'flashcard');
+      quizModeBtn.classList.toggle('active', appMode === 'quiz');
+      matchingModeBtn.classList.toggle('active', appMode === 'matching');
+      // Show/hide UI
+      flashcardArea.style.display = appMode === 'flashcard' ? '' : 'none';
+      quizArea.classList.toggle('active', appMode === 'quiz');
+      matchingArea.classList.toggle('active', appMode === 'matching');
+      if (appMode === 'flashcard') {
+        showCard(current);
+      } else if (appMode === 'quiz') {
+        startQuiz();
+      } else if (appMode === 'matching') {
+        startMatching();
+      }
+    }
+    // --- QUIZ GAME LOGIC ---
+   let quizType = "mc"; // or "write"
     let quizPage = 0;
     let matchingPage = 0;
     const QUIZ_BATCH = 8;
