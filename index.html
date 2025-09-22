@@ -272,13 +272,13 @@
       resize: vertical;
       font-family: 'Quicksand', Arial, sans-serif;
     }
-    #import-btn {
+    #import-btn, #reset-btn {
       background: var(--easy-green);
       color: #fff;
       margin-left: 2.5%;
       margin-bottom: 7px;
     }
-    #import-btn:hover, #import-btn:focus {
+    #import-btn:hover, #import-btn:focus, #reset-btn:hover, #reset-btn:focus {
       background: #399b6c;
     }
     /* 2x2 Stats Grid for Side Panel */
@@ -397,10 +397,10 @@
 <body>
   <div class="hero-header">
     <h1>
-      <span class="hearts"></span>
-      💖Mom's Flashcards💖
+      <span class="hearts">💖💖</span>
+      Mom's Flashcards
     </h1>
-    <div class="subtitle">Made by Mahsa</div>
+    <div class="subtitle">Made by Mahsa, your daughter</div>
     <hr class="divider">
   </div>
   <div class="container">
@@ -411,10 +411,9 @@
           Show English → Spanish
         </button>
       </div>
-      <!-- Shuffle and Random Difficult Buttons -->
+      <!-- Shuffle Mode Button -->
       <div class="buttons" style="margin-bottom: 0.7em;">
-        <button id="shuffle-btn" class="mode-btn">Shuffle / Random Card</button>
-        <button id="random-difficult-btn" class="mode-btn">Random Difficult Card</button>
+        <button id="shuffle-btn" class="mode-btn">Shuffle / Random Mode</button>
       </div>
       <!-- Mode Switcher -->
       <div class="buttons" style="margin-bottom:0.7em;">
@@ -441,6 +440,7 @@
         <textarea id="import" spellcheck="false" rows="8"></textarea>
         <br>
         <button id="import-btn">Import Cards</button>
+        <button id="reset-btn" type="button">Reset to Default</button>
       </details>
     </div>
     <div class="side-panel">
@@ -622,6 +622,7 @@ it's coming along,Está saliendo adelante
     let flipped = false;
     let difficultList = () => cards.filter(card => stats[card.id]?.difficult);
     let showEnglishFront = true; // true: English→Spanish, false: Spanish→English
+    let shuffleMode = false; // If true, next/prev are random cards
 
     // --- ELEMENTS ---
     const flashcard = document.getElementById('flashcard');
@@ -633,21 +634,18 @@ it's coming along,Está saliendo adelante
     const hardBtn = document.getElementById('hard-btn');
     const importArea = document.getElementById('import');
     const importBtn = document.getElementById('import-btn');
+    const resetBtn = document.getElementById('reset-btn');
     const statReviewed = document.getElementById('stat-reviewed');
     const statCorrect = document.getElementById('stat-correct');
     const statDifficult = document.getElementById('stat-difficult');
     const statMode = document.getElementById('stat-mode');
     const modeAllBtn = document.getElementById('mode-all');
     const modeDiffBtn = document.getElementById('mode-difficult');
-    // Progress Bars
     const progressReviewed = document.getElementById('progress-reviewed');
     const progressAccuracy = document.getElementById('progress-accuracy');
     const progressDifficult = document.getElementById('progress-difficult');
-    // Language toggle
     const toggleLangBtn = document.getElementById('toggle-lang-btn');
-    // Shuffle/Random buttons
     const shuffleBtn = document.getElementById('shuffle-btn');
-    const randomDifficultBtn = document.getElementById('random-difficult-btn');
 
     // Helper: Get cards in current mode
     function getCardList() {
@@ -695,6 +693,33 @@ it's coming along,Está saliendo adelante
         flashcard.style.opacity = 1;
       }, 150);
     }
+    // --- NEXT & PREV ---
+    function nextCard() {
+      let list = getCardList();
+      if (list.length === 0) return;
+      if (shuffleMode) {
+        let idx;
+        do {
+          idx = Math.floor(Math.random() * list.length);
+        } while (list.length > 1 && idx === current);
+        showCard(idx);
+      } else {
+        showCard(current + 1);
+      }
+    }
+    function prevCard() {
+      let list = getCardList();
+      if (list.length === 0) return;
+      if (shuffleMode) {
+        let idx;
+        do {
+          idx = Math.floor(Math.random() * list.length);
+        } while (list.length > 1 && idx === current);
+        showCard(idx);
+      } else {
+        showCard(current - 1);
+      }
+    }
     // --- MARK EASY/HARD ---
     function markEasy() {
       let list = getCardList();
@@ -705,7 +730,7 @@ it's coming along,Está saliendo adelante
       stats[c.id].difficult = false;
       saveStats(stats);
       updateStatsPanel();
-      showCard(current + 1);
+      nextCard();
     }
     function markHard() {
       let list = getCardList();
@@ -716,7 +741,7 @@ it's coming along,Está saliendo adelante
       stats[c.id].difficult = true;
       saveStats(stats);
       updateStatsPanel();
-      showCard(current + 1);
+      nextCard();
     }
     // --- STATS PANEL ---
     function updateStatsPanel() {
@@ -731,10 +756,8 @@ it's coming along,Está saliendo adelante
       statCorrect.textContent = percent + '%';
       statDifficult.textContent = difficult;
       statMode.textContent = mode === 'all' ? 'All' : 'Difficult';
-      // Mode button highlight
       modeAllBtn.classList.toggle('active', mode === 'all');
       modeDiffBtn.classList.toggle('active', mode === 'difficult');
-      // Progress bars (animated)
       let reviewedPerc = total ? Math.min(100, Math.round((reviewed/total)*100)) : 0;
       progressReviewed.style.width = reviewedPerc + "%";
       progressAccuracy.style.width = percent + "%";
@@ -753,8 +776,8 @@ it's coming along,Está saliendo adelante
       showCard(0);
     };
     // --- BUTTON EVENTS ---
-    prevBtn.onclick = () => { showCard(current - 1); };
-    nextBtn.onclick = () => { showCard(current + 1); };
+    prevBtn.onclick = prevCard;
+    nextBtn.onclick = nextCard;
     flipBtn.onclick = flipCard;
     flashcard.onclick = flipCard;
     flashcard.onkeypress = (e) => { if (e.key === ' ' || e.key === 'Enter') flipCard(); };
@@ -768,27 +791,13 @@ it's coming along,Está saliendo adelante
         : "Show Spanish → English";
       showCard(current);
     };
-    // --- Shuffle / Random Card ---
+    // --- Shuffle Mode Button ---
     shuffleBtn.onclick = () => {
-      let list = getCardList();
-      if (list.length === 0) return;
-      let idx;
-      do {
-        idx = Math.floor(Math.random() * list.length);
-      } while (list.length > 1 && idx === current);
-      showCard(idx);
-    };
-    // --- Random Difficult Card ---
-    randomDifficultBtn.onclick = () => {
-      let diff = difficultList();
-      if (diff.length === 0) {
-        alert("No difficult cards yet!");
-        return;
-      }
-      let idx = Math.floor(Math.random() * diff.length);
-      mode = 'difficult';
-      updateStatsPanel();
-      showCard(idx);
+      shuffleMode = !shuffleMode;
+      shuffleBtn.classList.toggle('active', shuffleMode);
+      shuffleBtn.textContent = shuffleMode
+        ? "Random Mode ON"
+        : "Shuffle / Random Mode";
     };
     // --- IMPORT CARDS ---
     importBtn.onclick = () => {
@@ -804,6 +813,20 @@ it's coming along,Está saliendo adelante
         alert(`Imported ${cards.length} cards!`);
       } else {
         alert("No valid cards found. Please check your format.");
+      }
+    };
+    // --- RESET TO DEFAULT CARDS ---
+    resetBtn.onclick = () => {
+      if (confirm("Are you sure you want to reset to the default cards? All current cards will be replaced.")) {
+        cards = parseCards(defaultCardsText);
+        saveCards(cards);
+        stats = loadStats(cards);
+        saveStats(stats);
+        mode = 'all';
+        updateStatsPanel();
+        showCard(0);
+        importArea.value = cardsToText();
+        alert("Reset to default cards!");
       }
     };
     // Populate import area with current cards
