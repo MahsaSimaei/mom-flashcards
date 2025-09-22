@@ -397,10 +397,10 @@
 <body>
   <div class="hero-header">
     <h1>
-      <span class="hearts">💖💖</span>
-      Mom's Flashcards
+      <span class="hearts"></span>
+      💖Mom's Flashcards💖
     </h1>
-    <div class="subtitle">Made by Mahsa, your daughter</div>
+    <div class="subtitle">Made by Mahsa</div>
     <hr class="divider">
   </div>
   <div class="container">
@@ -410,6 +410,11 @@
         <button id="toggle-lang-btn" class="mode-btn" style="min-width:190px">
           Show English → Spanish
         </button>
+      </div>
+      <!-- Shuffle and Random Difficult Buttons -->
+      <div class="buttons" style="margin-bottom: 0.7em;">
+        <button id="shuffle-btn" class="mode-btn">Shuffle / Random Card</button>
+        <button id="random-difficult-btn" class="mode-btn">Random Difficult Card</button>
       </div>
       <!-- Mode Switcher -->
       <div class="buttons" style="margin-bottom:0.7em;">
@@ -640,6 +645,9 @@ it's coming along,Está saliendo adelante
     const progressDifficult = document.getElementById('progress-difficult');
     // Language toggle
     const toggleLangBtn = document.getElementById('toggle-lang-btn');
+    // Shuffle/Random buttons
+    const shuffleBtn = document.getElementById('shuffle-btn');
+    const randomDifficultBtn = document.getElementById('random-difficult-btn');
 
     // Helper: Get cards in current mode
     function getCardList() {
@@ -759,6 +767,28 @@ it's coming along,Está saliendo adelante
         ? "Show English → Spanish"
         : "Show Spanish → English";
       showCard(current);
+    };
+    // --- Shuffle / Random Card ---
+    shuffleBtn.onclick = () => {
+      let list = getCardList();
+      if (list.length === 0) return;
+      let idx;
+      do {
+        idx = Math.floor(Math.random() * list.length);
+      } while (list.length > 1 && idx === current);
+      showCard(idx);
+    };
+    // --- Random Difficult Card ---
+    randomDifficultBtn.onclick = () => {
+      let diff = difficultList();
+      if (diff.length === 0) {
+        alert("No difficult cards yet!");
+        return;
+      }
+      let idx = Math.floor(Math.random() * diff.length);
+      mode = 'difficult';
+      updateStatsPanel();
+      showCard(idx);
     };
     // --- IMPORT CARDS ---
     importBtn.onclick = () => {
