@@ -7,8 +7,385 @@
   <!-- Google Fonts: Quicksand for body, Dancing Script for title -->
   <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;700&family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
   <style>
-    /* ... (same as your CSS above, omitted for brevity) ... */
-    /* Add below for quiz and matching grid navigation */
+    :root {
+      --pink: #f8bbd0;
+      --pastel-blue: #b3e0ff;
+      --white: #fff;
+      --baby-blue: #e3f2fd;
+      --accent: #fce4ec;
+      --strong-pink: #e573a8;
+      --easy-green: #56c596;
+      --hard-red: #f67280;
+      --shadow: 0 8px 32px 0 rgba(240, 98, 146, 0.14);
+      --panel-shadow: 0 8px 38px 0 rgba(179, 224, 255, 0.17);
+      --border-radius: 22px;
+      --big-text: 1.7rem;
+      --med-text: 1.25rem;
+      --side-padding: 36px;
+      --max-width: 1100px;
+      --gradient-main: linear-gradient(130deg, #fce4ec 55%, #e3f2fd 100%);
+      --gradient-panel: linear-gradient(120deg, #b3e0ff 80%, #f8bbd0 100%);
+      --gradient-card: linear-gradient(120deg, #f8bbd0 90%, #fce4ec 100%);
+      --gradient-card-flip: linear-gradient(120deg, #e3f2fd 90%, #b3e0ff 100%);
+      --progress-bg: #fde0ef;
+      --progress-bar: #e573a8;
+      --quiz-correct: #56c596;
+      --quiz-wrong: #f67280;
+      --quiz-neutral: #e3f2fd;
+    }
+    html, body {
+      min-height: 100vh;
+      background: var(--gradient-main);
+      font-family: 'Quicksand', Arial, sans-serif;
+      color: #333;
+      font-size: var(--med-text);
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+    }
+    .hero-header {
+      width: 100%;
+      max-width: 700px;
+      margin: 48px auto 28px auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background: linear-gradient(110deg, #fff 85%, #f8bbd0 100%);
+      border-radius: 26px;
+      box-shadow: 0 8px 44px 0 rgba(248, 187, 208, 0.16);
+      padding: 38px 5vw 24px 5vw;
+      position: relative;
+      z-index: 2;
+      animation: fadeInUp 1s cubic-bezier(.23,1.07,.56,1.14);
+    }
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(64px);}
+      to   { opacity: 1; transform: none;}
+    }
+    .hero-header h1 {
+      font-size: 2.28rem;
+      color: var(--strong-pink);
+      font-family: 'Dancing Script', cursive, 'Quicksand', Arial, sans-serif;
+      letter-spacing: 1.5px;
+      font-weight: 700;
+      text-shadow: 0 5px 18px #fde0ef90, 0 1px 0 #fff;
+      margin: 0 0 8px 0;
+      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.3em;
+      line-height: 1.15;
+    }
+    .hero-header .hearts {
+      font-size: 1.25em;
+      margin-right: 0.12em;
+      text-shadow: 0 2px 8px #fde0ef88;
+      display: inline-block;
+    }
+    .subtitle {
+      font-size: 1.16rem;
+      color: #4c395c;
+      background: linear-gradient(90deg, #fce4ec 70%, #b3e0ff 100%);
+      padding: 8px 26px;
+      border-radius: 17px;
+      margin-bottom: 13px;
+      margin-top: 0;
+      box-shadow: 0 2px 8px #f8bbd025;
+      font-family: 'Quicksand', Arial, sans-serif;
+      font-weight: 700;
+      letter-spacing: 1px;
+      position: relative;
+      display: inline-block;
+      animation: fadeIn 1.7s 0.4s backwards;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0;}
+      to   { opacity: 1;}
+    }
+    .divider {
+      width: 60px;
+      border: 0;
+      border-top: 3px solid #f8bbd0;
+      margin: 18px auto 0 auto;
+      opacity: 0.7;
+    }
+    .container {
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      align-items: flex-start;
+      gap: 34px;
+      width: 100%;
+      max-width: var(--max-width);
+      padding: 0 var(--side-padding);
+      box-sizing: border-box;
+    }
+    .main-content {
+      flex: 7;
+      min-width: 0;
+      max-width: 70%;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: flex-start;
+      gap: 0.5em;
+      filter: drop-shadow(var(--shadow));
+    }
+    .side-panel {
+      flex: 3;
+      min-width: 250px;
+      max-width: 340px;
+      width: 30%;
+      margin-top: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5em;
+      filter: drop-shadow(var(--panel-shadow));
+    }
+    #mode-bar {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+    .mode-nav-btn {
+      background: var(--pastel-blue);
+      color: #234;
+      border: 2px solid var(--baby-blue);
+      font-size: 1.09em;
+      padding: 11px 19px;
+      border-radius: 12px;
+      font-family: 'Quicksand', Arial, sans-serif;
+      cursor: pointer;
+      font-weight: 700;
+      outline: none;
+      transition: background 0.18s, color 0.13s;
+    }
+    .mode-nav-btn.active,
+    .mode-nav-btn:focus {
+      background: var(--pink);
+      color: var(--strong-pink);
+      border: 2px solid var(--strong-pink);
+    }
+    /* FLASHCARD STYLES */
+    #flashcard {
+      background: var(--gradient-card);
+      border-radius: var(--border-radius);
+      box-shadow: 0 7px 32px 0 rgba(240, 98, 146, 0.18);
+      width: 100%;
+      min-height: 170px;
+      max-width: 520px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      margin: 0 0 22px 0;
+      padding: 38px 18px;
+      font-size: var(--big-text);
+      cursor: pointer;
+      user-select: none;
+      text-align: center;
+      transition: background 0.22s, color 0.18s, box-shadow 0.2s, opacity 0.27s;
+      color: #3d405b;
+      border: 2px solid #fff0;
+      outline: none;
+      opacity: 1;
+      animation: cardFadeIn 0.7s;
+      will-change: opacity;
+    }
+    #flashcard.flipped {
+      background: var(--gradient-card-flip);
+      color: #374151;
+      border: 2px solid var(--strong-pink);
+    }
+    @keyframes cardFadeIn {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+    #counter {
+      font-size: 1.1em;
+      color: #9a4c85;
+      margin-bottom: 15px;
+      font-weight: 600;
+    }
+    .buttons {
+      display: flex;
+      justify-content: flex-start;
+      gap: 14px;
+      margin-bottom: 18px;
+      flex-wrap: wrap;
+    }
+    button {
+      padding: 14px 26px;
+      font-size: 1.1em;
+      border: none;
+      border-radius: 12px;
+      background: var(--baby-blue);
+      color: #234;
+      cursor: pointer;
+      font-family: 'Quicksand', Arial, sans-serif;
+      font-weight: 600;
+      margin: 0 1px;
+      box-shadow: 0 2px 8px #f8bbd033;
+      transition: background 0.18s, color 0.13s;
+      outline: none;
+    }
+    button:focus, button:hover {
+      background: var(--strong-pink);
+      color: #fff;
+    }
+    .easy-btn {
+      background: var(--easy-green);
+      color: #fff;
+    }
+    .easy-btn:hover, .easy-btn:focus {
+      background: #399b6c;
+      color: #fff;
+    }
+    .hard-btn {
+      background: var(--hard-red);
+      color: #fff;
+    }
+    .hard-btn:hover, .hard-btn:focus {
+      background: #c6425a;
+    }
+    .mode-btn {
+      background: var(--pastel-blue);
+      color: #234;
+      border: 2px solid var(--baby-blue);
+      margin-bottom: 0.4em;
+      font-size: 1.06em;
+      padding: 11px 18px;
+    }
+    .mode-btn.active,
+    .mode-btn:focus {
+      background: var(--pink);
+      color: var(--strong-pink);
+      border: 2px solid var(--strong-pink);
+    }
+    #import-area {
+      width: 100%;
+      max-width: 520px;
+      margin: 13px 0 24px 0;
+      background: #fff7faff;
+      border-radius: 13px;
+      box-shadow: 0 1px 12px #b3e0ff22;
+      padding: 0 0 14px 0;
+    }
+    #import-area summary {
+      cursor:pointer;
+      font-size: 1.15em;
+      color: var(--strong-pink);
+      font-weight: 700;
+      padding: 18px 22px 10px 22px;
+    }
+    #import {
+      width: 93%;
+      min-height: 95px;
+      font-size: 1em;
+      border-radius: 9px;
+      border: 1.7px solid #bbc;
+      padding: 7px;
+      margin-bottom: 8px;
+      margin-left: 2.5%;
+      margin-right: 2.5%;
+      resize: vertical;
+      font-family: 'Quicksand', Arial, sans-serif;
+    }
+    #import-btn, #reset-btn {
+      background: var(--easy-green);
+      color: #fff;
+      margin-left: 2.5%;
+      margin-bottom: 7px;
+    }
+    #import-btn:hover, #import-btn:focus, #reset-btn:hover, #reset-btn:focus {
+      background: #399b6c;
+    }
+    /* 2x2 Stats Grid for Side Panel */
+    #stats {
+      background: var(--gradient-panel);
+      border-radius: var(--border-radius);
+      box-shadow: var(--panel-shadow);
+      padding: 26px 22px 22px 22px;
+      width: 100%;
+      min-width: 0;
+      margin-bottom: 0.8em;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .stats-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.2em 1.5em;
+      width: 100%;
+    }
+    .stat-item {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      background: rgba(255,255,255,0.13);
+      border-radius: 13px;
+      padding: 8px 10px 8px 12px;
+      min-width: 0;
+      box-sizing: border-box;
+      min-height: 70px;
+      box-shadow: 0 2px 8px #f8bbd01a;
+    }
+    .stat-item strong {
+      font-size: 1.22em;
+      color: var(--strong-pink);
+      font-weight: 700;
+      letter-spacing: 1px;
+      margin-bottom: 3px;
+    }
+    .stat-label {
+      font-size: 0.97em;
+      font-weight: 500;
+      color: #486;
+    }
+    .progress-bar-wrap {
+      width: 100%;
+      max-width: 100%;
+      height: 13px;
+      background: var(--progress-bg);
+      border-radius: 11px;
+      margin: 7px 0 0 0;
+      box-shadow: 0 1px 5px #eee4;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+    }
+    .progress-bar-inner {
+      height: 100%;
+      background: linear-gradient(90deg, var(--progress-bar), #f8bbd0 80%);
+      border-radius: 11px;
+      width: 0%;
+      transition: width 0.7s cubic-bezier(.61,1.13,.49,.98);
+    }
+    /* QUIZ GAME STYLES */
+    #quiz-area, #matching-area {
+      background: var(--gradient-card);
+      border-radius: var(--border-radius);
+      box-shadow: 0 7px 32px 0 rgba(240, 98, 146, 0.14);
+      padding: 38px 18px 28px 18px;
+      width: 100%;
+      max-width: 520px;
+      margin-bottom: 18px;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+    }
+    #quiz-area.active, #matching-area.active {
+      display: flex;
+    }
+    /* Quiz/matching navigation and MC styles */
     .quiz-type-bar {
       display: flex;
       gap: 10px;
@@ -67,7 +444,6 @@
       opacity: 0.7;
       pointer-events: none;
     }
-    /* Matching navigation */
     .matching-nav {
       display: flex;
       gap: 10px;
@@ -91,34 +467,195 @@
       color: var(--strong-pink);
       border: 2px solid var(--strong-pink);
     }
+    /* End quiz/matching navigation and MC styles */
+    /* ... rest of your CSS as above ... */
+    #quiz-question {
+      font-size: 1.2em;
+      margin-bottom: 22px;
+      color: #3d405b;
+      text-align: center;
+      word-break: break-word;
+    }
+    #quiz-input {
+      padding: 10px 12px;
+      font-size: 1.08em;
+      border-radius: 9px;
+      border: 1.5px solid #bbc;
+      margin-bottom: 10px;
+      width: 90%;
+      font-family: 'Quicksand', Arial, sans-serif;
+      background: #fff;
+      color: #234;
+    }
+    #quiz-submit-btn {
+      background: var(--pastel-blue);
+      color: #234;
+      margin-bottom: 7px;
+    }
+    #quiz-feedback {
+      margin-top: 10px;
+      font-weight: 700;
+      font-size: 1.09em;
+    }
+    #quiz-feedback.correct {
+      color: var(--quiz-correct);
+    }
+    #quiz-feedback.wrong {
+      color: var(--quiz-wrong);
+    }
+    #quiz-progress {
+      margin-top: 15px;
+      font-size: 1.05em;
+      color: #a47cae;
+    }
+    #quiz-score {
+      font-size: 1.18em;
+      margin: 10px 0;
+    }
+    .match-grid {
+      display: flex;
+      gap: 24px;
+      width: 100%;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+    .match-col {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      width: 47%;
+    }
+    .match-btn {
+      background: var(--quiz-neutral);
+      color: #234;
+      border: 2px solid #bbc;
+      border-radius: 10px;
+      padding: 13px 6px;
+      font-size: 1.05em;
+      cursor: pointer;
+      font-family: 'Quicksand', Arial, sans-serif;
+      font-weight: 600;
+      transition: background 0.15s, color 0.13s, border 0.13s;
+    }
+    .match-btn.selected {
+      background: var(--strong-pink);
+      color: #fff;
+      border: 2px solid var(--hard-red);
+    }
+    .match-btn.matched {
+      background: var(--easy-green);
+      color: #fff;
+      border: 2px solid var(--easy-green);
+      cursor: default;
+      opacity: 0.7;
+    }
+    .match-btn.incorrect {
+      background: var(--hard-red);
+      color: #fff;
+      border: 2px solid var(--hard-red);
+      animation: shakeMatch 0.4s;
+    }
+    @keyframes shakeMatch {
+      10% { transform: translateX(-7px);}
+      30% { transform: translateX(7px);}
+      50% { transform: translateX(-7px);}
+      80% { transform: translateX(7px);}
+      100% { transform: none;}
+    }
+    #matching-score {
+      margin-bottom: 7px;
+      font-size: 1.07em;
+      font-weight: 700;
+      color: #a47cae;
+    }
+    #matching-end-message {
+      font-size: 1.16em;
+      font-weight: 700;
+      margin-top: 12px;
+    }
+    @media (max-width: 700px) {
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+      .stat-item {
+        min-height: 60px;
+      }
+      #quiz-area, #matching-area {
+        padding: 18px 2vw 13px 2vw;
+      }
+      .match-grid { flex-direction: column; gap: 16px;}
+      .match-col { width: 100%;}
+    }
+    @media (max-width: 950px) {
+      .container {
+        flex-direction: column;
+        gap: 0;
+        padding: 0 4vw;
+      }
+      .main-content, .side-panel {
+        max-width: 100%;
+        width: 100%;
+      }
+      .side-panel {
+        margin-top: 40px;
+        align-items: flex-stretch;
+      }
+    }
+    @media (max-width: 600px) {
+      .hero-header {
+        padding: 18px 2vw 13px 2vw;
+      }
+      .hero-header h1 {
+        font-size: 1.3rem;
+      }
+      .subtitle {
+        font-size: 0.98rem;
+      }
+      #flashcard {
+        font-size: 1.05rem;
+        padding: 16px 3vw;
+      }
+      .buttons button {
+        font-size: 0.97em;
+        padding: 8px 10px;
+      }
+      #import-area {
+        max-width: 98vw;
+      }
+      #stats {
+        padding: 13px 8vw 13px 8vw;
+      }
+    }
   </style>
 </head>
 <body>
-  <!-- ... header, sidepanel, etc. as before ... -->
+  <div class="hero-header">
+    <h1>
+      <span class="hearts">💖Mom's Flashcards💖</span>
+      
+    </h1>
+    <div class="subtitle">Made by Mahsa</div>
+    <hr class="divider">
+  </div>
   <div class="container">
     <div class="main-content">
-      <!-- Mode Nav Bar -->
       <div id="mode-bar">
         <button id="flashcard-mode-btn" class="mode-nav-btn active">Flashcards</button>
         <button id="quiz-mode-btn" class="mode-nav-btn">Quiz</button>
         <button id="matching-mode-btn" class="mode-nav-btn">Matching Game</button>
       </div>
-      <!-- Language Toggle -->
       <div id="lang-toggle-row" style="margin-bottom: 12px;">
         <button id="toggle-lang-btn" class="mode-btn" style="min-width:190px">
           Show English → Spanish
         </button>
       </div>
-      <!-- Shuffle Mode Button -->
       <div class="buttons" style="margin-bottom: 0.7em;">
         <button id="shuffle-btn" class="mode-btn">Shuffle / Random Mode</button>
       </div>
-      <!-- Mode Switcher -->
       <div class="buttons" style="margin-bottom:0.7em;">
         <button id="mode-all" class="mode-btn active">All Cards</button>
         <button id="mode-difficult" class="mode-btn">Difficult Cards</button>
       </div>
-      <!-- Flashcard area (same as before) ... -->
       <div id="flashcard-area">
         <div id="flashcard" tabindex="0">Click to show answer</div>
         <div id="counter"></div>
@@ -132,7 +669,6 @@
           <button id="hard-btn" class="hard-btn" aria-label="Mark card as Difficult">Difficult 😅</button>
         </div>
       </div>
-      <!-- Quiz area -->
       <div id="quiz-area">
         <div class="quiz-type-bar">
           <button id="quiz-type-mc" class="quiz-type-btn active">Test (Multiple Choice)</button>
@@ -147,7 +683,6 @@
         <div id="quiz-score"></div>
         <button id="quiz-exit-btn" class="mode-btn" style="margin-top:15px;">Back to Flashcards</button>
       </div>
-      <!-- Matching area -->
       <div id="matching-area">
         <div class="matching-nav">
           <button id="matching-prev" class="matching-nav-btn">&lt; Prev 8</button>
@@ -161,7 +696,6 @@
         <div id="matching-end-message"></div>
         <button id="matching-exit-btn" class="mode-btn" style="margin-top:12px;">Back to Flashcards</button>
       </div>
-      <!-- Import/Export Area (same as before) ... -->
       <details id="import-area">
         <summary>Edit or Import Cards</summary>
         <p style="font-size:1.05em;margin:8px 0 2px 0;">Paste your cards below in <strong>Front side,Back side</strong> format (one per line):</p>
@@ -171,9 +705,7 @@
         <button id="reset-btn" type="button">Reset to Default</button>
       </details>
     </div>
-    <!-- ... stats etc. as before ... -->
     <div class="side-panel">
-      <!-- ... stats unchanged ... -->
       <div id="stats">
         <div class="stats-grid">
           <div class="stat-item">
@@ -205,352 +737,10 @@
       </div>
     </div>
   </div>
-  <script>
-    // --- STORAGE KEYS ---
-    const STORAGE_KEY_CARDS = 'mom_flashcards_cards_v1';
-    const STORAGE_KEY_STATS = 'mom_flashcards_stats_v1';
-
-    // --- DEFAULT CARDS ---
-    const defaultCardsText = `
-the brake didn't work: ترمز کار نمی‌کرد,El freno no funcionó
-I'm running a fever,Tengo fiebre
-It just came out of the oven,Acaba de salir del horno
-This shirt looks good on me?,¿Me queda bien esta camisa?
-Hold on a minute!,¡Espera un minuto!
-Nephew,Sobrino
-Fountain,Fuente
-The brake didn't work,El freno no funcionó
-I neither smoke nor drink,No fumo ni bebo
-jacket pocket,bolsillo de la chaqueta
-make friend,Hacer amiga
-the closet ATM,el cajero automático del armario
-zucchini,calabacín
-I'm heading home,voy a casa
-Could you say that again please?,¿Podrías decirlo de nuevo?
-I was wondering if I could borrow your notes,¿Puedo prestar tus notas?
-Could you give me a hand?,¿Podrías echarme una mano? ¿Me puedes ayudar?
-I'm sorry to hear that,Lo siento mucho
-I'll let you know,Te lo avisaré
-I will call you back,Te llamaré de nuevo
-I can't hear you,No te puedo escuchar
-I get off work at 6,Mi trabajo termina a las 6
-I'm coming to pick you up,Estoy en camino para recogerte
-Nonsense,Sin sentido
-as we age,a medida que envejecemos
-Sesame,Sésamo
-companion,compañera
-a small handful,un pequeño puñado
-rely,confiar
-miracle,milagro
-had eased,se había aliviado
-soak stir and sip,remojar, remover y beber
-pumpkin seeds,semillas de calabaza
-resilience,resiliencia
-Stillness,Quietud
-embody,encarnar
-Hemp seeds,semillas de cáñamo
-sauce,salsa
-sesame paste,خمیر کنجد
-grace,gracia
-humble way,manera humilde
-manera humilde,perseguir a la juventud
-dye,teñir
-curly hair,cabello rizado, موی فرفری
-follow your doctor's advice,Siga los consejos de su médico
-long time no see,mucho tiempo sin verlo
-How's it going?,¿Cómo va todo?
-How have you been?,¿Cómo has estado?
-I think so too.,Yo también lo creo.
-I'm not sure about that.,No estoy seguro de eso.
-that sounds great,Suena genial.
-I'm looking forward to it.,Estoy deseando que llegue.
-no worries,No te preocupes
-would you like me to call him,¿Quieres que lo llame?
-Do you mind if I open the door,¿Te importa si abro la puerta?
-I'd be happy to help you.,Estaría encantado de ayudarte.
-I'm running late.,Voy con retraso.
-I'll be there in 10 minutes.,Estaré allí en 10 minutos.
-what are you up to today?,¿Qué estás haciendo hoy?
-not much just relaxing at home.,No mucho, solo descansando en casa.
-Let's catch up soon.,Pongámonos al día pronto.
-I'll get back to you,Me pondré en contacto contigo enseguida.
-what do you mean?,¿Qué quieres decir?
-let me think about it,Déjame pensarlo
-that makes sense.,Eso tiene sentido.
-I don't no idea,No tengo ni idea
-that's a good point.,Ese es un buen punto.
-it was nice talking to you.,Fue agradable hablar contigo.
-take care,Cuídate
-see you around,Nos vemos
-keep in touch,mantenerse en contacto
-fairly well,bastante bien, نسبamente bien
-at length my wish was realized.,Al final, mi deseo se hizo realidad.
-that makes no sense at all.,Eso no tiene ningún sentido.
-I can't get the lid off.,No puedo quitar la tapa.
-half a loaf is better than none.,Medio pan es mejor que nada.
-you bet!,Apuesto a que sí!
-jogging,correr
-it's coming along,Está saliendo adelante
-    `.trim();
-
-    // --- CARD PARSING ---
-    function parseCards(text) {
-      return text.split('\n').map(line => {
-        // Allow commas in back, so only first comma splits
-        let [front, ...backArr] = line.split(',');
-        let back = backArr.join(',').trim();
-        return { front: front.trim(), back: back, id: Math.random().toString(36).slice(2,12) };
-      }).filter(card => card.front && card.back);
-    }
-
-    // --- STORAGE: Load & Save ---
-    function loadCards() {
-      let data = localStorage.getItem(STORAGE_KEY_CARDS);
-      if (!data) return parseCards(defaultCardsText);
-      try {
-        const arr = JSON.parse(data);
-        return arr.map(card => ({
-          front: card.front,
-          back: card.back,
-          id: card.id || Math.random().toString(36).slice(2,12)
-        }));
-      } catch { return parseCards(defaultCardsText); }
-    }
-    function saveCards(cards) {
-      localStorage.setItem(STORAGE_KEY_CARDS, JSON.stringify(cards));
-    }
-    function loadStats(cards) {
-      let data = localStorage.getItem(STORAGE_KEY_STATS);
-      let stats = {};
-      if (data) {
-        try { stats = JSON.parse(data); } catch { stats = {}; }
-      }
-      for (let c of cards) {
-        if (!stats[c.id]) stats[c.id] = { reviewed: 0, correct: 0, wrong: 0, difficult: false };
-      }
-      Object.keys(stats).forEach(cid=>{
-        if (!cards.find(c=>c.id===cid)) delete stats[cid];
-      });
-      return stats;
-    }
-    function saveStats(stats) {
-      localStorage.setItem(STORAGE_KEY_STATS, JSON.stringify(stats));
-    }
-
-    // --- STATE ---
-    let cards = loadCards();
-    let stats = loadStats(cards);
-    let mode = 'all'; // 'all' or 'difficult'
-    let current = 0;
-    let flipped = false;
-    let showEnglishFront = true;
-    let shuffleMode = false;
-    let appMode = 'flashcard'; // 'flashcard', 'quiz', 'matching'
-    let quizState = null;
-    let matchingState = null;
-
-    // --- ELEMENTS ---
-    const flashcardArea = document.getElementById('flashcard-area');
-    const flashcard = document.getElementById('flashcard');
-    const counter = document.getElementById('counter');
-    const prevBtn = document.getElementById('prev-btn');
-    const nextBtn = document.getElementById('next-btn');
-    const flipBtn = document.getElementById('flip-btn');
-    const easyBtn = document.getElementById('easy-btn');
-    const hardBtn = document.getElementById('hard-btn');
-    const importArea = document.getElementById('import');
-    const importBtn = document.getElementById('import-btn');
-    const resetBtn = document.getElementById('reset-btn');
-    const statReviewed = document.getElementById('stat-reviewed');
-    const statCorrect = document.getElementById('stat-correct');
-    const statDifficult = document.getElementById('stat-difficult');
-    const statMode = document.getElementById('stat-mode');
-    const modeAllBtn = document.getElementById('mode-all');
-    const modeDiffBtn = document.getElementById('mode-difficult');
-    const progressReviewed = document.getElementById('progress-reviewed');
-    const progressAccuracy = document.getElementById('progress-accuracy');
-    const progressDifficult = document.getElementById('progress-difficult');
-    const toggleLangBtn = document.getElementById('toggle-lang-btn');
-    const shuffleBtn = document.getElementById('shuffle-btn');
-    // Mode nav
-    const flashcardModeBtn = document.getElementById('flashcard-mode-btn');
-    const quizModeBtn = document.getElementById('quiz-mode-btn');
-    const matchingModeBtn = document.getElementById('matching-mode-btn');
-    // Quiz elements
-    const quizArea = document.getElementById('quiz-area');
-    const quizQuestion = document.getElementById('quiz-question');
-    const quizInput = document.getElementById('quiz-input');
-    const quizSubmitBtn = document.getElementById('quiz-submit-btn');
-    const quizFeedback = document.getElementById('quiz-feedback');
-    const quizProgress = document.getElementById('quiz-progress');
-    const quizScore = document.getElementById('quiz-score');
-    const quizExitBtn = document.getElementById('quiz-exit-btn');
-    // Matching elements
-    const matchingArea = document.getElementById('matching-area');
-    const matchLeft = document.getElementById('match-left');
-    const matchRight = document.getElementById('match-right');
-    const matchingScore = document.getElementById('matching-score');
-    const matchingEndMsg = document.getElementById('matching-end-message');
-    const matchingExitBtn = document.getElementById('matching-exit-btn');
-
-    // --- HELPERS ---
-    function difficultList() {
-      return cards.filter(card => stats[card.id]?.difficult);
-    }
-    function getCardList() {
-      if (mode === 'all') return cards;
-      return difficultList();
-    }
-    function cardsToText() {
-      return cards.map(card => `${card.front},${card.back}`).join('\n');
-    }
-    function shuffleArray(array) {
-      let arr = array.slice();
-      for (let i = arr.length - 1; i > 0; i--) {
-        let j = Math.floor(Math.random() * (i + 1));
-        [arr[i], arr[j]] = [arr[j], arr[i]];
-      }
-      return arr;
-    }
-    function normalize(str) {
-      return str.trim().toLowerCase().replace(/\s+/g, ' ');
-    }
-    // --- FLASHCARD LOGIC ---
-    function showCard(idx) {
-      if (appMode !== 'flashcard') return;
-      let list = getCardList();
-      if (list.length === 0) {
-        flashcard.textContent = "No cards in this mode.";
-        counter.textContent = '';
-        return;
-      }
-      current = (idx + list.length) % list.length;
-      flipped = false;
-      flashcard.classList.remove('flipped');
-      const card = list[current];
-      flashcard.style.opacity = 0;
-      setTimeout(() => {
-        flashcard.textContent = showEnglishFront ? card.front : card.back;
-        counter.textContent = `Card ${current + 1} of ${list.length}`;
-        flashcard.classList.remove('flipped');
-        flashcard.style.animation = "none";
-        void flashcard.offsetWidth;
-        flashcard.style.animation = null;
-        flashcard.style.opacity = 1;
-      }, 170);
-    }
-    function flipCard() {
-      if (appMode !== 'flashcard') return;
-      let list = getCardList();
-      if (!list.length) return;
-      flipped = !flipped;
-      flashcard.classList.toggle('flipped', flipped);
-      const card = list[current];
-      flashcard.style.opacity = 0;
-      setTimeout(() => {
-        if (flipped) flashcard.textContent = showEnglishFront ? card.back : card.front;
-        else flashcard.textContent = showEnglishFront ? card.front : card.back;
-        flashcard.style.animation = "none";
-        void flashcard.offsetWidth;
-        flashcard.style.animation = null;
-        flashcard.style.opacity = 1;
-      }, 150);
-    }
-    function nextCard() {
-      let list = getCardList();
-      if (list.length === 0) return;
-      if (shuffleMode) {
-        let idx;
-        do {
-          idx = Math.floor(Math.random() * list.length);
-        } while (list.length > 1 && idx === current);
-        showCard(idx);
-      } else {
-        showCard(current + 1);
-      }
-    }
-    function prevCard() {
-      let list = getCardList();
-      if (list.length === 0) return;
-      if (shuffleMode) {
-        let idx;
-        do {
-          idx = Math.floor(Math.random() * list.length);
-        } while (list.length > 1 && idx === current);
-        showCard(idx);
-      } else {
-        showCard(current - 1);
-      }
-    }
-    function markEasy() {
-      let list = getCardList();
-      if (!list.length) return;
-      let c = list[current];
-      stats[c.id].reviewed += 1;
-      stats[c.id].correct += 1;
-      stats[c.id].difficult = false;
-      saveStats(stats);
-      updateStatsPanel();
-      nextCard();
-    }
-    function markHard() {
-      let list = getCardList();
-      if (!list.length) return;
-      let c = list[current];
-      stats[c.id].reviewed += 1;
-      stats[c.id].wrong += 1;
-      stats[c.id].difficult = true;
-      saveStats(stats);
-      updateStatsPanel();
-      nextCard();
-    }
-    // --- STATS PANEL ---
-    function updateStatsPanel() {
-      let total = cards.length;
-      let reviewed = Object.values(stats).reduce((a, s) => a + s.reviewed, 0);
-      let correct = Object.values(stats).reduce((a, s) => a + s.correct, 0);
-      let wrong = Object.values(stats).reduce((a, s) => a + s.wrong, 0);
-      let difficult = cards.filter(c => stats[c.id]?.difficult).length;
-      let percent = reviewed === 0 ? 0 : Math.round(100 * correct / reviewed);
-      statReviewed.textContent = reviewed;
-      statCorrect.textContent = percent + '%';
-      statDifficult.textContent = difficult;
-      statMode.textContent = mode === 'all' ? 'All' : 'Difficult';
-      modeAllBtn.classList.toggle('active', mode === 'all');
-      modeDiffBtn.classList.toggle('active', mode === 'difficult');
-      let reviewedPerc = total ? Math.min(100, Math.round((reviewed/total)*100)) : 0;
-      progressReviewed.style.width = reviewedPerc + "%";
-      progressAccuracy.style.width = percent + "%";
-      let difficultPerc = total ? Math.min(100, Math.round((difficult/total)*100)) : 0;
-      progressDifficult.style.width = difficultPerc + "%";
-    }
-    // --- MODE SWITCH ---
-    function setMode(newMode) {
-      mode = newMode;
-      updateStatsPanel();
-      showCard(0);
-    }
-    // --- APP MODE SWITCH (Flashcards/Quiz/Matching) ---
-    function setAppMode(newMode) {
-      appMode = newMode;
-      // Mode nav highlight
-      flashcardModeBtn.classList.toggle('active', appMode === 'flashcard');
-      quizModeBtn.classList.toggle('active', appMode === 'quiz');
-      matchingModeBtn.classList.toggle('active', appMode === 'matching');
-      // Show/hide UI
-      flashcardArea.style.display = appMode === 'flashcard' ? '' : 'none';
-      quizArea.classList.toggle('active', appMode === 'quiz');
-      matchingArea.classList.toggle('active', appMode === 'matching');
-      if (appMode === 'flashcard') {
-        showCard(current);
-      } else if (appMode === 'quiz') {
-        startQuiz();
-      } else if (appMode === 'matching') {
-        startMatching();
-      }
-    }
-    // --- QUIZ GAME LOGIC ---
-   let quizType = "mc"; // or "write"
+ <script>
+    // ... ALL setup code as before (state, helpers, etc.) ...
+    // --- ADD/REPLACE THESE: ---
+    let quizType = "mc"; // or "write"
     let quizPage = 0;
     let matchingPage = 0;
     const QUIZ_BATCH = 8;
